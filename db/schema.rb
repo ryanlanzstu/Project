@@ -10,11 +10,12 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2024_02_28_154557) do
+ActiveRecord::Schema[7.0].define(version: 2024_02_28_163624) do
   create_table "lists", force: :cascade do |t|
     t.string "name"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "row_order"
   end
 
   create_table "tasks", force: :cascade do |t|
@@ -22,6 +23,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_02_28_154557) do
     t.integer "list_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "row_order"
     t.index ["list_id"], name: "index_tasks_on_list_id"
   end
 

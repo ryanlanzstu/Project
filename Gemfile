@@ -70,3 +70,5 @@ group :test do
   gem "selenium-webdriver"
 
 end
+
+gem "ranked-model", "~> 0.4.9"

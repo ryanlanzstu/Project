@@ -4,6 +4,14 @@ import Sortable from 'sortablejs';
 // Connects to data-controller="sortable"
 export default class extends Controller {
   connect() {
-    Sortable.create(this.element, {})
+    Sortable.create(this.element, {
+      onEnd: this.onEnd.bind(this) //Logs position of the list!
+    }) 
+  }
+
+  onEnd(event) {
+    console.log(event.item.dataset.sortableId)
+    console.log(event.newIndex)
   }
 }
+
