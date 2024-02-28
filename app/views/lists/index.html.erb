@@ -1,0 +1,14 @@
+<p style="color: green"><%= notice %></p>
+
+<h1>Lists</h1>
+
+<div id="lists">
+  <ul data-controller="sortable">
+    <% @lists.each do |list| %>
+    <li>
+      <%= render list %>
+    </li>
+    <% end %>
+  </ul>
+</div>
+
