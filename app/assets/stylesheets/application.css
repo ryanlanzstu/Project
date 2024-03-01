@@ -13,3 +13,26 @@
  *= require_tree .
  *= require_self
  */
+
+
+ /* Adds sticky note look to each list!! */
+ .sticky-note {
+    background-color: #fdfd86; /* Light yellow, typical sticky note color */
+    box-shadow: 5px 5px 15px rgba(0,0,0,0.2); /* Adds a subtle shadow */
+    padding: 10px; /* Padding inside the note */
+    margin: 15px; /* Margin around each note */
+    border-radius: 5px; /* Slightly rounded corners for the sticky note */
+    font-family: 'Comic Sans MS', 'Comic Sans', cursive; /* Gives a handwritten feel, optional */
+    font-size: 16px; /* Adjust as needed */
+    max-width: 200px; /* Maximum width of the sticky note */
+    word-wrap: break-word; /* Ensures the content breaks to avoid overflow */
+  }
+  
+  /* Optional: Add some tilt to the sticky notes for a more dynamic look */
+  .sticky-note:nth-child(odd) {
+    transform: rotate(-2deg);
+  }
+  
+  .sticky-note:nth-child(even) {
+    transform: rotate(2deg);
+  }

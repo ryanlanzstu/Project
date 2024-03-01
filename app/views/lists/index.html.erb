@@ -5,10 +5,11 @@
 <div id="lists">
   <ul data-controller="sortable">
     <% @lists.each do |list| %>
-      <li data-sortable-update-url="<%= sort_list_path(list) %>">
-        <%= render list %>
+      <li data-sortable-update-url="<%= sort_list_path(list) %>" class="list-container">
+        <div class="sticky-note">
+          <%= render list %>
+        </div>
       </li>
     <% end %>
   </ul>
 </div>
-
