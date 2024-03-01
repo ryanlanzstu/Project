@@ -4,27 +4,26 @@ import { put } from '@rails/request.js'
 
 // Connects to data-controller="sortable"
 export default class extends Controller {
+  static values = {
+    group: String
+  }
+
   connect() {
     Sortable.create(this.element, {
-      onEnd: this.onEnd.bind(this) //Logs position of the list
+      onEnd: this.onEnd.bind(this),
+      group: this.groupValue, //Logs position of the list
     }) 
   }
 
   onEnd(event) {
     var sortableUpdateUrl = event.item.dataset.sortableUpdateUrl
-    console.log(event.item.dataset.sortableUpdateUrl)
-    console.log(event.newIndex)
+    // console.log(sortableUpdateUrl)
+    // console.log(event.newIndex)
+    var sortableListId = event.to.dataset.sortableListId // This allows tasks to be put on the same level as lists so need to fix
+    console.log(event.to.dataset)
     //Request from requestjs
-    put(event.item.dataset.sortableUpdateUrl, {
-      body: JSON.stringify({
-        row_order_position: event.newIndex,
-        // Get URL, taking params
-        contentType: "application/json",
-        // Sorted correctly finally, list sequence was 1-3-2 but this fixes it
-        headers: {
-          "X-CSRF-Token": document.querySelector("[name=csrf-token]").content
-        }
-      })
-    });
-}
+    put(sortableUpdateUrl, {
+      body: JSON.stringify({row_order_position: event.newIndex, list_id: sortableListId})
+    })
+  }
 }

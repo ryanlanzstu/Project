@@ -9,7 +9,7 @@ class TasksController < ApplicationController
   # Use same as lists for time being to sort tasks, can't do it within different lists
   def sort
     @task = Task.find(params[:id])
-    @task.update(row_order_position: params[:row_order_position]) #SUCCESFUL, no more errors finally
+    @task.update(row_order_position: params[:row_order_position], list_id: params[:list_id]) # Amend to only allow tasks to be in lists hopefully!! 
     head :no_content 
   end
 
