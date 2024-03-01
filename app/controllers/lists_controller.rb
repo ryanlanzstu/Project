@@ -9,8 +9,8 @@ class ListsController < ApplicationController
 
   def sort
     @list = List.find(params[:id])
-    @list.update(row_order_position: params[:row_order_position])
-    head :no_content
+    @list.update(row_order_position: params[:row_order_position]) #SUCCESFUL, no more errors finally
+    head :no_content 
     # debugger
   end
 

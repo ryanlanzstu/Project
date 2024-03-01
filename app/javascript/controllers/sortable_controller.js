@@ -14,8 +14,16 @@ export default class extends Controller {
     console.log(event.item.dataset.sortableId)
     console.log(event.newIndex)
     //Request from requestjs
-    put(`/lists/${event.item.dataset.sortableId}/sort`);//Get URL, add params
-    body: JSON.stringify({row_order_position: event.newIndex})
-  }
+    put(`/lists/${event.item.dataset.sortableId}/sort`, {
+      body: JSON.stringify({
+        row_order_position: event.newIndex,
+        // Specify that you're sending JSON
+        contentType: "application/json",
+        // Include CSRF Token for Rails
+        headers: {
+          "X-CSRF-Token": document.querySelector("[name=csrf-token]").content
+        }
+      })
+    });
 }
-
+}
