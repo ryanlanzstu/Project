@@ -72,3 +72,5 @@ group :test do
 end
 
 gem "ranked-model", "~> 0.4.9"
+
+gem 'requestjs-rails'
