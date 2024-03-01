@@ -6,6 +6,14 @@ class TasksController < ApplicationController
     @tasks = Task.all
   end
 
+  # Use same as lists for time being to sort tasks, can't do it within different lists
+  def sort
+    @task = Task.find(params[:id])
+    @task.update(row_order_position: params[:row_order_position]) #SUCCESFUL, no more errors finally
+    head :no_content 
+  end
+
+
   # GET /tasks/1 or /tasks/1.json
   def show
   end

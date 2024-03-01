@@ -11,15 +11,16 @@ export default class extends Controller {
   }
 
   onEnd(event) {
-    console.log(event.item.dataset.sortableId)
+    var sortableUpdateUrl = event.item.dataset.sortableUpdateUrl
+    console.log(event.item.dataset.sortableUpdateUrl)
     console.log(event.newIndex)
     //Request from requestjs
-    put(`/lists/${event.item.dataset.sortableId}/sort`, {
+    put(event.item.dataset.sortableUpdateUrl, {
       body: JSON.stringify({
         row_order_position: event.newIndex,
-        // Specify that you're sending JSON
+        // Get URL, taking params
         contentType: "application/json",
-        // Include CSRF Token for Rails
+        // Sorted correctly finally, list sequence was 1-3-2 but this fixes it
         headers: {
           "X-CSRF-Token": document.querySelector("[name=csrf-token]").content
         }
