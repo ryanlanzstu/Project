@@ -1,4 +1,5 @@
 Rails.application.routes.draw do
+  devise_for :users
   # Sort action for tasks
   resources :tasks do
   member do

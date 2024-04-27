@@ -74,3 +74,6 @@ end
 gem "ranked-model", "~> 0.4.9"
 
 gem 'requestjs-rails'
+
+# For user login and auth
+gem 'devise'
