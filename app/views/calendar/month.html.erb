@@ -14,7 +14,7 @@
         <div></div>
     <% end %>
     <% @date.all_month.each do |day| %>
-        <div class="border min-h-24">
+        <div class="border min-h-24 <%= today_class(day) %>">
             <%= day.strftime('%d') %>
         </div>
     <% end %>

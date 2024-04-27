@@ -14,7 +14,7 @@ end
   end
 
    #Calendar routes
- root "calendar#index"
+ root "events#index"
  get "calendar/month", to: 'calendar#month'
 end
 
