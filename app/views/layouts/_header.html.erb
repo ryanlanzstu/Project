@@ -23,7 +23,7 @@
           <%= link_to 'Edit Account', edit_user_registration_path, class: 'nav-link' %>
         </li>
         <li class="nav-item">
-          <%= link_to 'Sign Out', destroy_user_session_path, method: :delete, class: 'nav-link' %> <!-- Ensure method: :delete is included -->
+          <%= button_to 'Sign Out', destroy_user_session_path, method: :delete, class: 'btn btn-link nav-link', form: { data: { turbo: false } } %> <!-- Updated to button_to -->
         </li>
         <% else %>
         <li class="nav-item">

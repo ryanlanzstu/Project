@@ -10,11 +10,14 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2024_07_04_112034) do
+ActiveRecord::Schema[7.0].define(version: 2024_07_04_140727) do
   create_table "collegemodules", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.integer "user_id", null: false
+    t.string "module_name"
+    t.string "module_id"
+    t.string "module_lecturer"
     t.index ["user_id"], name: "index_collegemodules_on_user_id"
   end
 
