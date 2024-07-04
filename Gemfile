@@ -77,3 +77,6 @@ gem 'requestjs-rails'
 
 # For user login and auth
 gem 'devise'
+
+# List
+gem 'acts_as_list'

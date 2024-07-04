@@ -1,33 +1,36 @@
 class ListsController < ApplicationController
+  before_action :authenticate_user!
   before_action :set_list, only: %i[ show edit update destroy ]
 
   # GET /lists or /lists.json
   def index
-    @lists = List.rank(:row_order)
+    @lists = current_user.lists.rank(:row_order)
   end
 
   def sort
-    @list = List.find(params[:id])
-    @list.update(row_order_position: params[:row_order_position]) #SUCCESFUL, no more errors finally
+    @list = current_user.lists.find(params[:id])
+    @list.update(row_order_position: params[:row_order_position]) #SUCCESSFUL, no more errors finally
     head :no_content 
   end
 
   # GET /lists/1 or /lists/1.json
   def show
+    @list = current_user.lists.find(params[:id])
   end
 
   # GET /lists/new
   def new
-    @list = List.new
+    @list = current_user.lists.build
   end
 
   # GET /lists/1/edit
   def edit
+    @list = current_user.lists.find(params[:id])
   end
 
   # POST /lists or /lists.json
   def create
-    @list = List.new(list_params)
+    @list = current_user.lists.build(list_params)
 
     respond_to do |format|
       if @list.save
@@ -42,6 +45,7 @@ class ListsController < ApplicationController
 
   # PATCH/PUT /lists/1 or /lists/1.json
   def update
+    @list = current_user.lists.find(params[:id])
     respond_to do |format|
       if @list.update(list_params)
         format.html { redirect_to list_url(@list), notice: "List was successfully updated." }
@@ -55,6 +59,7 @@ class ListsController < ApplicationController
 
   # DELETE /lists/1 or /lists/1.json
   def destroy
+    @list = current_user.lists.find(params[:id])
     @list.destroy
 
     respond_to do |format|
@@ -66,7 +71,7 @@ class ListsController < ApplicationController
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_list
-      @list = List.find(params[:id])
+      @list = current_user.lists.find(params[:id])
     end
 
     # Only allow a list of trusted parameters through.

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2024_07_04_140727) do
+ActiveRecord::Schema[7.0].define(version: 2024_07_04_151952) do
   create_table "collegemodules", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -37,6 +37,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_07_04_140727) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.integer "row_order"
+    t.integer "user_id"
   end
 
   create_table "tasks", force: :cascade do |t|
@@ -45,7 +46,9 @@ ActiveRecord::Schema[7.0].define(version: 2024_07_04_140727) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.integer "row_order"
+    t.integer "user_id"
     t.index ["list_id"], name: "index_tasks_on_list_id"
+    t.index ["user_id"], name: "index_tasks_on_user_id"
   end
 
   create_table "users", force: :cascade do |t|
@@ -63,4 +66,5 @@ ActiveRecord::Schema[7.0].define(version: 2024_07_04_140727) do
   add_foreign_key "collegemodules", "users"
   add_foreign_key "events", "users"
   add_foreign_key "tasks", "lists"
+  add_foreign_key "tasks", "users"
 end

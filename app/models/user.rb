@@ -5,4 +5,7 @@ class User < ApplicationRecord
          :recoverable, :rememberable, :validatable
 
          has_many :collegemodules
+         has_many :lists
+         has_many :tasks
+         has_many :events
 end

@@ -1,15 +1,15 @@
 class TasksController < ApplicationController
-  before_action :set_task, only: %i[ show edit update destroy ]
-  # Ensure set_collegemodule is not included here if it is not relevant to tasks
+  before_action :authenticate_user!
+  before_action :set_task, only: %i[show edit update destroy]
 
   # GET /tasks or /tasks.json
   def index
-    @tasks = Task.all
+    @tasks = current_user.tasks
   end
 
   # Use same as lists for time being to sort tasks, can't do it within different lists
   def sort
-    @task = Task.find(params[:id])
+    @task = current_user.tasks.find(params[:id])
     @task.update(row_order_position: params[:row_order_position], list_id: params[:list_id])
     head :no_content 
   end
@@ -20,7 +20,7 @@ class TasksController < ApplicationController
 
   # GET /tasks/new
   def new
-    @task = Task.new
+    @task = current_user.tasks.build
   end
 
   # GET /tasks/1/edit
@@ -29,7 +29,7 @@ class TasksController < ApplicationController
 
   # POST /tasks or /tasks.json
   def create
-    @task = Task.new(task_params)
+    @task = current_user.tasks.build(task_params)
 
     respond_to do |format|
       if @task.save
@@ -68,11 +68,11 @@ class TasksController < ApplicationController
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_task
-      @task = Task.find(params[:id])
+      @task = current_user.tasks.find(params[:id])
     end
 
     # Only allow a list of trusted parameters through.
     def task_params
-      params.require(:task).permit(:name, :list_id, :start_date, :end_date, :description)  # Ensure you have the correct attributes
+      params.require(:task).permit(:name, :list_id, :start_date, :end_date, :description)
     end
 end
