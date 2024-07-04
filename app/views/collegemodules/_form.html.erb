@@ -1,0 +1,32 @@
+<%= form_with(model: collegemodule, url: collegemodules_path, method: :post) do |form| %>
+  <% if collegemodule.errors.any? %>
+    <div style="color: red">
+      <h2><%= pluralize(collegemodule.errors.count, "error") %> Error While Saving:</h2>
+
+      <ul>
+        <% collegemodule.errors.each do |error| %>
+          <li><%= error.full_message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div>
+    <%= form.label :module_name, style: "display: block" %>
+    <%= form.text_field :module_name %>
+  </div>
+
+  <div>
+    <%= form.label :module_id, style: "display: block" %>
+    <%= form.text_field :module_id %>
+  </div>
+
+  <div>
+    <%= form.label :module_lecturer, style: "display: block" %>
+    <%= form.text_field :module_lecturer %>
+  </div>
+
+  <div>
+    <%= form.submit %>
+  </div>
+<% end %>

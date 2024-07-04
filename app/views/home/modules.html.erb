@@ -1,0 +1,15 @@
+<!-- collegemodules/index.html.erb -->
+<p style="color: green"><%= notice %></p>
+
+<h1>Collegemodules</h1>
+
+<div id="Modules">
+  <% @collegemodules.each do |collegemodule| %>
+    <%= render 'collegemodules/collegemodule', collegemodule: collegemodule %>
+    <p>
+      <%= link_to "Show Module", collegemodule %>
+    </p>
+  <% end %>
+</div>
+
+<%= link_to "New Module", new_collegemodule_path %>

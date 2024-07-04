@@ -1,0 +1,29 @@
+<div class= "container mt-5 text-center simple-calendar">
+    <h1>Calendar</h1>
+    <h2><%= link_to "Create New Event", new_event_path, class: "btn btn-primary" %></h2>
+    <%= month_calendar(events: @events) do |date, events|%> 
+    <div class="day">
+        <%= date %>
+        </div>
+        <% events.each do |events|%>
+            <div class= "card-header">
+                <div class= "card-title">
+                    <%= link_to events.title, events %>
+                </div>
+            </div>
+            <div class= "card-body">
+                <p class= "card-title">
+                    <% events.description%>
+                </p>
+            </div>
+            <div class= "card-footer">
+                <p class= "card-title">
+                    From: <%= events.start_time.strftime('%A,%B, %d, %Y, at %I:%M %p') %>
+                </p>
+                <p class= "card-title">
+                    To: <%= events.end_time.strftime('%A,%B, %d, %Y, at %I:%M %p') %>
+                </p>
+            </div>
+        <% end %>
+    <% end %>
+</div>
