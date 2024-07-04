@@ -1,29 +1,50 @@
-<div class= "container mt-5 text-center simple-calendar">
-    <h1>Calendar</h1>
-    <h2><%= link_to "Create New Event", new_event_path, class: "btn btn-primary" %></h2>
-    <%= month_calendar(events: @events) do |date, events|%> 
-    <div class="day">
-        <%= date %>
-        </div>
-        <% events.each do |events|%>
-            <div class= "card-header">
-                <div class= "card-title">
-                    <%= link_to events.title, events %>
-                </div>
-            </div>
-            <div class= "card-body">
-                <p class= "card-title">
-                    <% events.description%>
-                </p>
-            </div>
-            <div class= "card-footer">
-                <p class= "card-title">
-                    From: <%= events.start_time.strftime('%A,%B, %d, %Y, at %I:%M %p') %>
-                </p>
-                <p class= "card-title">
-                    To: <%= events.end_time.strftime('%A,%B, %d, %Y, at %I:%M %p') %>
-                </p>
-            </div>
-        <% end %>
+<div class="container mt-5 text-center">
+  <h1>Calendar</h1>
+  <h2><%= link_to "Create New Event", new_event_path, class: "btn btn-primary" %></h2>
+
+  <%= link_to "<", calendar_month_path(date: @date - 1.month) %>
+  <%= link_to "Today", calendar_month_path %>
+  <%= link_to ">", calendar_month_path(date: @date + 1.month) %>
+
+  <%= @date.strftime('%B %Y') %>
+
+  <div class="grid grid-cols-7">
+    <% Date::ABBR_DAYNAMES.rotate.each do |weekday| %>
+      <div>
+        <%= weekday %>
+      </div>
     <% end %>
+    <% @date.beginning_of_month.wday.times do %>
+      <div></div>
+    <% end %>
+    <% @date.all_month.each do |day| %>
+      <div class="border min-h-24 <%= "bg-blue-200" if day == Date.today %>">
+        <%= day.strftime('%d') %>
+        <% @tasks.each do |task| %>
+          <% if task.start_date.to_date == day %>
+            <div class="card mt-2">
+              <div class="card-header">
+                <div class="card-title">
+                  <%= link_to task.title, task %>
+                </div>
+              </div>
+              <div class="card-body">
+                <p class="card-text">
+                  <%= task.description %>
+                </p>
+              </div>
+              <div class="card-footer">
+                <p class="card-text">
+                  From: <%= task.start_date.strftime('%A, %B %d, %Y, at %I:%M %p') %>
+                </p>
+                <p class="card-text">
+                  To: <%= task.end_date.strftime('%A, %B %d, %Y, at %I:%M %p') %>
+                </p>
+              </div>
+            </div>
+          <% end %>
+        <% end %>
+      </div>
+    <% end %>
+  </div>
 </div>

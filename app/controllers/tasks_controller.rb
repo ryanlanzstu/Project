@@ -1,5 +1,6 @@
 class TasksController < ApplicationController
   before_action :set_task, only: %i[ show edit update destroy ]
+  # Ensure set_collegemodule is not included here if it is not relevant to tasks
 
   # GET /tasks or /tasks.json
   def index
@@ -9,10 +10,9 @@ class TasksController < ApplicationController
   # Use same as lists for time being to sort tasks, can't do it within different lists
   def sort
     @task = Task.find(params[:id])
-    @task.update(row_order_position: params[:row_order_position], list_id: params[:list_id]) # Amend to only allow tasks to be in lists hopefully!! 
+    @task.update(row_order_position: params[:row_order_position], list_id: params[:list_id])
     head :no_content 
   end
-
 
   # GET /tasks/1 or /tasks/1.json
   def show
@@ -73,6 +73,6 @@ class TasksController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def task_params
-      params.require(:task).permit(:name, :list_id)
+      params.require(:task).permit(:name, :list_id, :start_date, :end_date, :description)  # Ensure you have the correct attributes
     end
 end

@@ -1,32 +1,32 @@
-<%= form_with(model: collegemodule, url: collegemodules_path, method: :post) do |form| %>
-  <% if collegemodule.errors.any? %>
-    <div style="color: red">
-      <h2><%= pluralize(collegemodule.errors.count, "error") %> Error While Saving:</h2>
+<%= form_with(model: @collegemodule, local: true) do |form| %>
+  <% if @collegemodule.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(@collegemodule.errors.count, "error") %> prohibited this collegemodule from being saved:</h2>
 
       <ul>
-        <% collegemodule.errors.each do |error| %>
-          <li><%= error.full_message %></li>
+        <% @collegemodule.errors.full_messages.each do |message| %>
+          <li><%= message %></li>
         <% end %>
       </ul>
     </div>
   <% end %>
 
-  <div>
-    <%= form.label :module_name, style: "display: block" %>
+  <div class="field">
+    <%= form.label :module_name %>
     <%= form.text_field :module_name %>
   </div>
 
-  <div>
-    <%= form.label :module_id, style: "display: block" %>
+  <div class="field">
+    <%= form.label :module_id %>
     <%= form.text_field :module_id %>
   </div>
 
-  <div>
-    <%= form.label :module_lecturer, style: "display: block" %>
+  <div class="field">
+    <%= form.label :module_lecturer %>
     <%= form.text_field :module_lecturer %>
   </div>
 
-  <div>
+  <div class="actions">
     <%= form.submit %>
   </div>
 <% end %>

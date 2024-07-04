@@ -6,27 +6,33 @@
     </button>
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
       <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-        <% if user_signed_in?%> # Shows pages ony in the user is signed in
+        <% if user_signed_in? %> <!-- Shows pages only if the user is signed in -->
         <li class="nav-item">
           <%= link_to 'Modules', home_modules_path, class: 'nav-link' %>
         </li>
         <li class="nav-item">
-          <%= link_to 'Calendar', calendar_month_path, class: 'nav-link' %>
+          <%= link_to 'Calendar', calendar_month_path, class: 'nav-link' %> <!-- Updated link -->
         </li>
+        <li class="nav-item">
+            <%= link_to 'Lists', lists_path, class: 'nav-link' %> <!-- Link to lists -->
+          </li>
+        <li class="nav-item">
+            <%= link_to 'Tasks', tasks_path, class: 'nav-link' %> <!-- Add this line -->
+          </li>
         <li class="nav-item">
           <%= link_to 'Edit Account', edit_user_registration_path, class: 'nav-link' %>
         </li>
         <li class="nav-item">
-          <%= link_to 'Sign Out', destroy_user_session_path, class: 'nav-link' %>
+          <%= link_to 'Sign Out', destroy_user_session_path, method: :delete, class: 'nav-link' %> <!-- Ensure method: :delete is included -->
         </li>
-        <% else%>
-         <li class="nav-item">
+        <% else %>
+        <li class="nav-item">
           <%= link_to 'Sign Up', new_user_registration_path, class: 'nav-link' %>
         </li>
-         <li class="nav-item">
+        <li class="nav-item">
           <%= link_to 'Sign In', new_user_session_path, class: 'nav-link' %>
         </li>
-        <% end%>
+        <% end %>
       </ul>
       <form class="d-flex">
         <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
