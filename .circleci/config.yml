@@ -14,11 +14,11 @@ jobs:
   build:
     working_directory: ~/ExampleApplication
     docker:
-      - image: circle/node:10.16.3
+      - image: circleci/node:10.16.3
     steps:
       - checkout
       - run:
-          name: circle/node:10.16.3
+          name: circleci/node:10.16.3
           command: 'sudo npm install -g npm@5'
       - restore_cache:
           keys:
