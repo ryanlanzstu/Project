@@ -8,7 +8,7 @@ workflows:
           filters:
             branches:
               only:
-                - main
+                - master
 
 jobs:
   build:
