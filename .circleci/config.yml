@@ -1,6 +1,6 @@
- version: 2.1
+version: 2.1
 
- workflows:
+workflows:
   version: 2
   build:
     jobs:
@@ -21,7 +21,8 @@ jobs:
           name: circle/node:10.16.3
           command: 'sudo npm install -g npm@5'
       - restore_cache:
-          key: dependency-cache-{{ checksum "package-lock.json" }}
+          keys:
+            - dependency-cache-{{ checksum "package-lock.json" }}
       - run:
           name: install-npm
           command: npm install
