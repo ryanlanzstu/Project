@@ -9,4 +9,4 @@ cd /home/ubuntu/Project
 # Install dependencies
 bundle install
 # Start app
-pm2 start --name calendar -- bundle exec rails server -b 0.0.0.0 -p 3000
+pm2 start bin/www --name calendar
