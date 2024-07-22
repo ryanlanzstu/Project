@@ -1,3 +1,5 @@
+chmod +x deploy.sh
+
 #!/bin/bash
 sudo apt update && sudo apt install nodejs npm -y
 # Install pm2
