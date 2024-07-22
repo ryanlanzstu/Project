@@ -9,27 +9,45 @@ workflows:
             branches:
               only:
                 - master
+      - deploy:
+          filters:
+            branches:
+              only:
+                - master
+          requires:
+            - build
 
 jobs:
   build:
-    working_directory: ~/calendar
+    working_directory: ~/Project
     docker:
       - image: circleci/node:10.16.3
     steps:
       - checkout
       - run:
-          name: circleci/node:10.16.3
+          name: Update npm
           command: 'sudo npm install -g npm@5'
       - restore_cache:
           keys:
             - dependency-cache-{{ checksum "package-lock.json" }}
       - run:
-          name: install-npm
+          name: Install npm dependencies
           command: npm install
       - run:
-          name: test-run
+          name: Run tests
           command: npm run test
       - save_cache:
           key: dependency-cache-{{ checksum "package-lock.json" }}
           paths:
             - ./node_modules
+
+  deploy:
+    docker:
+      - image: circleci/node:10.16.3
+    steps:
+      - add_ssh_keys:
+          fingerprints:
+            - "your-ssh-key-fingerprint"
+      - run:
+          name: Deploy application
+          command: ssh -o StrictHostKeyChecking=no $EC2_USERNAME@$EC2_PUBLIC_DNS "rm -rf ~/Project/; git clone https://github.com/ryanlanzstu/Project.git ~/Project; source ~/Project/deploy.sh"
