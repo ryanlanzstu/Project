@@ -49,5 +49,11 @@ jobs:
           fingerprints:
             - "your-ssh-key-fingerprint"
       - run:
+          name: Checkout master branch
+          command: |
+            git clone https://github.com/ryanlanzstu/Project.git ~/Project
+            cd ~/Project
+            git checkout master
+      - run:
           name: Deploy application
-          command: ssh -o StrictHostKeyChecking=no $EC2_USERNAME@$EC2_PUBLIC_DNS "rm -rf ~/Project/; git clone https://github.com/ryanlanzstu/Project.git ~/Project; source ~/Project/deploy.sh"
+          command: ssh -o StrictHostKeyChecking=no $EC2_USERNAME@$EC2_PUBLIC_DNS "cd ~/Project && bash deploy.sh"
