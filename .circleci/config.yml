@@ -45,24 +45,10 @@ jobs:
     docker:
       - image: circleci/node:10.16.3
     steps:
-      - run:
-          name: Checkout master branch
-          command: |
-            git clone https://github.com/ryanlanzstu/Project.git ~/Project
-            cd ~/Project
-            git checkout master
-      - run:
-          name: List files for verification
-          command: |
-            cd ~/Project
-            ls -la
+      - checkout
       - run:
           name: Make deploy.sh executable
-          command: |
-            cd ~/Project
-            chmod +x deploy.sh
+          command: chmod +x deploy.sh
       - run:
           name: Deploy application
-          command: |
-            cd ~/Project
-            ssh -o StrictHostKeyChecking=no $EC2_USERNAME@$EC2_PUBLIC_DNS "cd ~/Project && ./deploy.sh"
+          command: ssh -o StrictHostKeyChecking=no $EC2_USERNAME@$EC2_PUBLIC_DNS "cd ~/Project && ./deploy.sh"
