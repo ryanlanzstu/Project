@@ -6,7 +6,7 @@ sudo npm install -g pm2
 pm2 stop calendar
 # Change directory
 cd /home/ubuntu/Project
-# Install dependencies
+# Ensure dependencies are installed
 bundle install
 # Start app
-pm2 start bin/www --name calendar
+pm2 start --name calendar -- bundle exec rails server -b 0.0.0.0 -p 3000
