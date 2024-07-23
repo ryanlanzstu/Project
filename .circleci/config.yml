@@ -56,4 +56,4 @@ jobs:
           command: chmod +x ~/Project/deploy.sh
       - run:
           name: Deploy application
-          command: ssh -o StrictHostKeyChecking=no $EC2_USERNAME@$EC2_PUBLIC_DNS "cd ~/Project && git checkout master && git pull && ./deploy.sh"
+          command: ssh -o StrictHostKeyChecking=no $EC2_USERNAME@$EC2_PUBLIC_DNS "cd ~/Project && ./deploy.sh"
