@@ -1,40 +1,54 @@
 #!/bin/bash
-# Ensure the script is executed with administrative privileges
-if [ "$EUID" -ne 0 ]
-  then echo "Please run as root"
-  exit
+
+# Ensuring the script is run with sudo or root privileges
+if [[ $(id -u) -ne 0 ]]; then
+  echo "This script must be run as root or with sudo."
+  exit 1
 fi
 
-# Update system and install nodejs and npm
-apt update && apt install -y nodejs npm
+# Update system and install Node.js and npm
+echo "Updating system packages and installing Node.js and npm..."
+sudo apt update && sudo apt install -y nodejs npm
+if [[ $? -ne 0 ]]; then
+  echo "Failed to install Node.js or npm. Exiting."
+  exit 1
+fi
 
-# Install pm2 globally
-npm install -g pm2
-
-# Stop any running instances of the app
-pm2 stop calendar
+# Install PM2 globally
+echo "Installing PM2 globally..."
+sudo npm install -g pm2
+if [[ $? -ne 0 ]]; then
+  echo "Failed to install PM2. Exiting."
+  exit 1
+fi
 
 # Navigate to the project directory
+echo "Changing directory to the project..."
 cd /home/ubuntu/Project
-
-# Install rbenv and ruby-build if not already installed
-if ! command -v rbenv &> /dev/null; then
-  git clone https://github.com/rbenv/rbenv.git ~/.rbenv
-  cd ~/.rbenv && src/configure && make -C src
-  echo 'export PATH="$HOME/.rbenv/bin:$PATH"' >> ~/.bashrc
-  echo 'eval "$(rbenv init -)"' >> ~/.bashrc
-  source ~/.bashrc
-  git clone https://github.com/rbenv/ruby-build.git ~/.rbenv/plugins/ruby-build
-  echo 'export PATH="$HOME/.rbenv/plugins/ruby-build/bin:$PATH"' >> ~/.bashrc
-  source ~/.bashrc
+if [[ $? -ne 0 ]]; then
+  echo "Failed to navigate to /home/ubuntu/Project. Exiting."
+  exit 1
 fi
 
-# Install the correct Ruby version using rbenv
-rbenv install -s 3.1.4
-rbenv local 3.1.4
+# Stop any running instances of the app
+echo "Stopping any running PM2 processes for 'calendar'..."
+pm2 stop calendar
+# The stop command may fail if 'calendar' isn't already running, which isn't necessarily an error
 
-# Install Ruby dependencies
-bundle install
+# Install project dependencies
+echo "Installing project dependencies via npm..."
+npm install
+if [[ $? -ne 0 ]]; then
+  echo "Failed to install npm dependencies. Exiting."
+  exit 1
+fi
 
 # Start the app with PM2 in production mode
-pm2 start --name calendar -- bundle exec rails server -b 0.0.0.0 -p 3000 -e production
+echo "Starting the app in production mode with PM2..."
+pm2 start ./bin/www --name calendar
+if [[ $? -ne 0 ]]; then
+  echo "Failed to start the application with PM2. Exiting."
+  exit 1
+fi
+
+echo "Deployment successful."
