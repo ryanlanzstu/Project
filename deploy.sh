@@ -1,14 +1,20 @@
 #!/bin/bash
+# Ensure the script is executed with administrative privileges
+if [ "$EUID" -ne 0 ]
+  then echo "Please run as root"
+  exit
+fi
+
 # Update system and install nodejs and npm
-sudo apt update && sudo apt install nodejs npm -y
+apt update && apt install -y nodejs npm
 
-# Install pm2
-sudo npm install -g pm2
+# Install pm2 globally
+npm install -g pm2
 
-# Stop any running instances
+# Stop any running instances of the app
 pm2 stop calendar
 
-# Change directory to the project
+# Navigate to the project directory
 cd /home/ubuntu/Project
 
 # Install rbenv and ruby-build if not already installed
@@ -17,17 +23,17 @@ if ! command -v rbenv &> /dev/null; then
   cd ~/.rbenv && src/configure && make -C src
   echo 'export PATH="$HOME/.rbenv/bin:$PATH"' >> ~/.bashrc
   echo 'eval "$(rbenv init -)"' >> ~/.bashrc
-  exec $SHELL
+  source ~/.bashrc
   git clone https://github.com/rbenv/ruby-build.git ~/.rbenv/plugins/ruby-build
   echo 'export PATH="$HOME/.rbenv/plugins/ruby-build/bin:$PATH"' >> ~/.bashrc
-  exec $SHELL
+  source ~/.bashrc
 fi
 
-# Install the correct Ruby version
+# Install the correct Ruby version using rbenv
 rbenv install -s 3.1.4
 rbenv local 3.1.4
 
-# Install dependencies
+# Install Ruby dependencies
 bundle install
 
 # Start the app with PM2 in production mode
