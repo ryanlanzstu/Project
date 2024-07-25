@@ -3,6 +3,7 @@ Rails.application.routes.draw do
   resources :tasks do
     member do
       put :sort
+      patch :update_date
     end
   end
 
@@ -16,7 +17,6 @@ Rails.application.routes.draw do
   # Calendar routes
   root "home#index"  # Choose either "home#index" or "calendar#index"
   get "calendar/month", to: 'calendar#month'
-  post "calendar/update_task_date/:id", to: 'calendar#update_task_date'
 
   devise_for :users
   resources :collegemodules, path: 'home_modules'
