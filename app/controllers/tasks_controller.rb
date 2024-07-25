@@ -11,7 +11,7 @@ class TasksController < ApplicationController
   def sort
     @task = current_user.tasks.find(params[:id])
     @task.update(row_order_position: params[:row_order_position], list_id: params[:list_id])
-    head :no_content 
+    head :no_content
   end
 
   # GET /tasks/1 or /tasks/1.json
@@ -66,13 +66,14 @@ class TasksController < ApplicationController
   end
 
   private
-    # Use callbacks to share common setup or constraints between actions.
-    def set_task
-      @task = current_user.tasks.find(params[:id])
-    end
 
-    # Only allow a list of trusted parameters through.
-    def task_params
-      params.require(:task).permit(:name, :list_id, :start_date, :end_date, :description)
-    end
+  # Use callbacks to share common setup or constraints between actions.
+  def set_task
+    @task = current_user.tasks.find(params[:id])
+  end
+
+  # Only allow a list of trusted parameters through.
+  def task_params
+    params.require(:task).permit(:name, :list_id, :start_date, :end_date, :description)
+  end
 end

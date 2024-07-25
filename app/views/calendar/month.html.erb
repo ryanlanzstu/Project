@@ -2,20 +2,50 @@
 <%= link_to "Today", calendar_month_path %>
 <%= link_to ">", calendar_month_path(date: @date + 1.month) %>
 
-<%= @date.strftime('%B %Y')%>
+<%= @date.strftime('%B %Y') %>
 
 <div class="grid grid-cols-7">
-    <% Date::ABBR_DAYNAMES.rotate.each do |weekday| %>
-        <div>
-            <%= weekday %>
-        </div>
-    <% end %>
-    <% month_offset(@date).times do %>
-        <div></div>
-    <% end %>
-    <% @date.all_month.each do |day| %>
-        <div class="border min-h-24 <%= today_class(day) %>">
-            <%= day.strftime('%d') %>
-        </div>
-    <% end %>
+  <% Date::ABBR_DAYNAMES.rotate.each do |weekday| %>
+    <div>
+      <%= weekday %>
+    </div>
+  <% end %>
+  <% month_offset(@date).times do %>
+    <div></div>
+  <% end %>
+  <% @date.all_month.each do |day| %>
+    <div class="border min-h-24 <%= today_class(day) %>">
+      <%= day.strftime('%d') %>
+      <div id="day-<%= day %>" class="task-dropzone" data-date="<%= day %>">
+        <% @tasks.where(start_date: day).each do |task| %>
+          <div class="task" id="task-<%= task.id %>">
+            <%= task.name %>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  <% end %>
 </div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.14.0/Sortable.min.js"></script>
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    document.querySelectorAll('.task-dropzone').forEach(function(dropzone) {
+      new Sortable(dropzone, {
+        group: 'tasks',
+        onEnd: function(event) {
+          const taskId = event.item.id.split('-')[1];
+          const newDate = event.to.dataset.date;
+          fetch(`/calendar/update_task_date/${taskId}`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'X-CSRF-Token': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+            },
+            body: JSON.stringify({ start_date: newDate })
+          });
+        }
+      });
+    });
+  });
+</script>
