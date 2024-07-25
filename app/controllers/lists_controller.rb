@@ -1,21 +1,15 @@
 class ListsController < ApplicationController
   before_action :authenticate_user!
-  before_action :set_list, only: %i[ show edit update destroy ]
+  before_action :set_list, only: %i[show edit update destroy]
 
   # GET /lists or /lists.json
   def index
-    @lists = current_user.lists.rank(:row_order)
-  end
-
-  def sort
-    @list = current_user.lists.find(params[:id])
-    @list.update(row_order_position: params[:row_order_position]) #SUCCESSFUL, no more errors finally
-    head :no_content 
+    @lists = current_user.lists
   end
 
   # GET /lists/1 or /lists/1.json
   def show
-    @list = current_user.lists.find(params[:id])
+    @tasks = @list.tasks
   end
 
   # GET /lists/new
@@ -25,7 +19,6 @@ class ListsController < ApplicationController
 
   # GET /lists/1/edit
   def edit
-    @list = current_user.lists.find(params[:id])
   end
 
   # POST /lists or /lists.json
@@ -34,7 +27,7 @@ class ListsController < ApplicationController
 
     respond_to do |format|
       if @list.save
-        format.html { redirect_to list_url(@list), notice: "List was successfully created." }
+        format.html { redirect_to @list, notice: "List was successfully created." }
         format.json { render :show, status: :created, location: @list }
       else
         format.html { render :new, status: :unprocessable_entity }
@@ -45,10 +38,9 @@ class ListsController < ApplicationController
 
   # PATCH/PUT /lists/1 or /lists/1.json
   def update
-    @list = current_user.lists.find(params[:id])
     respond_to do |format|
       if @list.update(list_params)
-        format.html { redirect_to list_url(@list), notice: "List was successfully updated." }
+        format.html { redirect_to @list, notice: "List was successfully updated." }
         format.json { render :show, status: :ok, location: @list }
       else
         format.html { render :edit, status: :unprocessable_entity }
@@ -59,9 +51,7 @@ class ListsController < ApplicationController
 
   # DELETE /lists/1 or /lists/1.json
   def destroy
-    @list = current_user.lists.find(params[:id])
     @list.destroy
-
     respond_to do |format|
       format.html { redirect_to lists_url, notice: "List was successfully destroyed." }
       format.json { head :no_content }
@@ -69,13 +59,14 @@ class ListsController < ApplicationController
   end
 
   private
-    # Use callbacks to share common setup or constraints between actions.
-    def set_list
-      @list = current_user.lists.find(params[:id])
-    end
 
-    # Only allow a list of trusted parameters through.
-    def list_params
-      params.require(:list).permit(:name)
-    end
+  # Use callbacks to share common setup or constraints between actions.
+  def set_list
+    @list = current_user.lists.find(params[:id])
+  end
+
+  # Only allow a list of trusted parameters through.
+  def list_params
+    params.require(:list).permit(:name, :description, :start_date, :end_date)
+  end
 end
