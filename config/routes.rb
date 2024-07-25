@@ -1,6 +1,6 @@
 Rails.application.routes.draw do
   # Sort action for tasks
-  resources :tasks, except: [:new, :create] do
+  resources :tasks do
     member do
       put :sort
     end
@@ -11,7 +11,6 @@ Rails.application.routes.draw do
     member do
       put :sort
     end
-    resources :tasks, only: [:new, :create]
   end
 
   # Calendar routes
