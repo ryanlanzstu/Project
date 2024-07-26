@@ -43,6 +43,10 @@ if [[ $? -ne 0 ]]; then
   exit 1
 fi
 
+# Install PRIV & SERVER KEYS
+echo "$PRIVATE_KEY" > privatekey.pem
+echo "$SERVER" > server.crt
+
 # Start the app with PM2 in production mode
 echo "Starting the app in production mode with PM2..."
 pm2 start ./bin/www --name calendar
