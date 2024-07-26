@@ -2,28 +2,35 @@ import { Controller } from "@hotwired/stimulus"
 import Sortable from 'sortablejs';
 import { put } from '@rails/request.js'
 
-// Connects to data-controller="sortable"
 export default class extends Controller {
   static values = {
     group: String
   }
 
   connect() {
-    Sortable.create(this.element, {
-      onEnd: this.onEnd.bind(this),
-      group: this.groupValue, //Logs position of the list
-    }) 
+    this.sortable = Sortable.create(this.element, {
+      group: this.groupValue,
+      animation: 150,
+      draggable: '.task, .event', // Only tasks and events are draggable
+      onEnd: this.onEnd.bind(this)
+    })
   }
 
   onEnd(event) {
-    var sortableUpdateUrl = event.item.dataset.sortableUpdateUrl
-    // console.log(sortableUpdateUrl)
-    // console.log(event.newIndex)
-    var sortableListId = event.to.dataset.sortableListId // This allows tasks to be put on the same level as lists so need to fix
-    console.log(event.to.dataset)
-    //Request from requestjs
+    const sortableUpdateUrl = event.item.dataset.sortableUpdateUrl;
+    const newListId = event.to.closest('.list-container') ? event.to.closest('.list-container').dataset.sortableUpdateUrl : null;
+    const newDate = event.to.dataset.date || null;
+
+    let payload = { row_order_position: event.newIndex };
+    if (newListId) {
+      payload.list_id = newListId;
+    }
+    if (newDate) {
+      payload.date = newDate;
+    }
+
     put(sortableUpdateUrl, {
-      body: JSON.stringify({row_order_position: event.newIndex, list_id: sortableListId})
+      body: JSON.stringify(payload)
     })
   }
 }

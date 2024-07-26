@@ -12,57 +12,52 @@
  *
  *= require_tree .
  *= require_self
+ *= require application.tailwind
  */
 
-
- /* Adds sticky note look to each list!! */
- .sticky-note {
-    background-color: #fdfd86; /* Light yellow, typical sticky note color */
-    box-shadow: 5px 5px 15px rgba(0,0,0,0.2); /* Adds a subtle shadow */
-    padding: 10px; /* Padding inside the note */
-    margin: 15px; /* Margin around each note */
-    border-radius: 5px; /* Slightly rounded corners for the sticky note */
-    font-family: 'Comic Sans MS', 'Comic Sans', cursive; /* Gives a handwritten feel, optional */
-    font-size: 16px; /* Adjust as needed */
-    max-width: 200px; /* Maximum width of the sticky note */
-    word-wrap: break-word; /* Ensures the content breaks to avoid overflow */
-  }
-  
-  /* Optional: Add some tilt to the sticky notes for a more dynamic look */
-  .sticky-note:nth-child(odd) {
-    transform: rotate(-2deg);
-  }
-  
-  .sticky-note:nth-child(even) {
-    transform: rotate(2deg);
-  }
-
-  /* Grid for calendar*/
-  .grid {
-    display: grid;
-    grid-template-columns: repeat(7, 1fr); 
-    grid-gap: 10px;  
+/* Adds sticky note look to each list!! */
+.sticky-note {
+  background-color: #fdfd86; /* Light yellow, typical sticky note color */
+  box-shadow: 5px 5px 15px rgba(0,0,0,0.2); /* Adds a subtle shadow */
+  padding: 10px; /* Padding inside the note */
+  margin: 15px; /* Margin around each note */
+  border-radius: 5px; /* Slightly rounded corners for the sticky note */
+  font-family: 'Comic Sans MS', 'Comic Sans', cursive; /* Gives a handwritten feel, optional */
+  font-size: 16px; /* Adjust as needed */
+  max-width: 200px; /* Maximum width of the sticky note */
+  word-wrap: break-word; /* Ensures the content breaks to avoid overflow */
 }
 
-
-  /* Borders for calendar*/
-  .border {
-    border: 1px solid black;
-    text-align: center;  
-    font-size: 16px; 
-    display: flex;  
-    justify-content: center;
-    align-items: center;  
+/* Optional: Add some tilt to the sticky notes for a more dynamic look */
+.sticky-note:nth-child(odd) {
+  transform: rotate(-2deg);
 }
 
+.sticky-note:nth-child(even) {
+  transform: rotate(2deg);
+}
+
+/* Grid for calendar*/
+.grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr); 
+  grid-gap: 10px;  
+}
+
+/* Borders for calendar*/
+.border {
+  border: 1px solid black;
+  text-align: left;  
+  font-size: 16px; 
+  display: flex;  
+  justify-content: left;
+  align-items: left;  
+}
 
 .min-h-24 {
-    min-height: 100px;  
+  min-height: 100px;  
 }
 
 .bg-rose-200 {
   background-color: #fed7d7; 
 }
-
-
-

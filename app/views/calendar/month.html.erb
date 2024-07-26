@@ -2,54 +2,6 @@
 <%= link_to "Today", calendar_month_path %>
 <%= link_to ">", calendar_month_path(date: @date + 1.month) %>
 
-<%= @date.strftime('%B %Y')%>
+<%= @date.strftime('%B %Y') %>
 
-<div class="grid grid-cols-7">
-  <% Date::ABBR_DAYNAMES.rotate.each do |weekday| %>
-    <div>
-      <%= weekday %>
-    </div>
-  <% end %>
-  <% month_offset(@date).times do %>
-    <div></div>
-  <% end %>
-  <% @date.all_month.each do |day| %>
-    <div class="border min-h-24 <%= today_class(day) %>">
-      <%= day.strftime('%d') %>
-      <div id="day-<%= day %>" class="task-dropzone" data-date="<%= day %>">
-        <% @tasks.where("DATE(created_at) = ?", day).each do |task| %>
-          <div class="task" id="task-<%= task.id %>" data-task-id="<%= task.id %>">
-            <%= task.name %>
-          </div>
-        <% end %>
-      </div>
-    </div>
-  <% end %>
-</div>
-
-<script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.10.2/Sortable.min.js"></script>
-<script>
-  document.addEventListener('DOMContentLoaded', function() {
-    const dropzones = document.querySelectorAll('.task-dropzone');
-
-    dropzones.forEach(dropzone => {
-      new Sortable(dropzone, {
-        group: 'tasks',
-        animation: 150,
-        onEnd: function(evt) {
-          const taskId = evt.item.dataset.taskId;
-          const newDate = evt.to.dataset.date;
-
-          fetch(`/tasks/${taskId}/update_date`, {
-            method: 'PATCH',
-            headers: {
-              'Content-Type': 'application/json',
-              'X-CSRF-Token': document.querySelector('meta[name="csrf-token"]').content
-            },
-            body: JSON.stringify({ date: newDate })
-          });
-        }
-      });
-    });
-  });
-</script>
+<%= render 'calendar/month', date: @date, tasks: @tasks, events: @events %>

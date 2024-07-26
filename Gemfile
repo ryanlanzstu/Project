@@ -80,3 +80,6 @@ gem 'devise'
 
 # List
 gem 'acts_as_list'
+
+# Tailwind CSS
+gem 'tailwindcss-rails'

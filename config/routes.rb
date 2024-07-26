@@ -1,5 +1,4 @@
 Rails.application.routes.draw do
-  # Sort action for tasks
   resources :tasks do
     member do
       put :sort
@@ -7,15 +6,13 @@ Rails.application.routes.draw do
     end
   end
 
-  # Sort action for lists
   resources :lists do
     member do
       put :sort
     end
   end
 
-  # Calendar routes
-  root "home#index"  # Choose either "home#index" or "calendar#index"
+  root "home#index"
   get "calendar/month", to: 'calendar#month'
 
   devise_for :users

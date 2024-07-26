@@ -3,7 +3,7 @@
 <h1>Lists</h1>
 
 <div id="lists">
-  <ul data-controller="sortable">
+  <ul data-controller="sortable" data-sortable-group-value="lists">
     <% @lists.each do |list| %>
       <li data-sortable-update-url="<%= sort_list_path(list) %>" class="list-container">
         <div class="sticky-note">
