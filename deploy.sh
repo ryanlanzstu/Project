@@ -6,9 +6,11 @@ if [[ $(id -u) -ne 0 ]]; then
   exit 1
 fi
 
-# Update system and install Node.js and npm
+echo "Deploying application..."
+
+# Update system packages and install Node.js and npm
 echo "Updating system packages and installing Node.js and npm..."
-sudo apt update && sudo apt install -y nodejs npm
+sudo apt update && sudo apt install -y nodejs npm ruby-full build-essential zlib1g-dev
 if [[ $? -ne 0 ]]; then
   echo "Failed to install Node.js or npm. Exiting."
   exit 1
@@ -30,6 +32,10 @@ if [[ $? -ne 0 ]]; then
   exit 1
 fi
 
+# Load rbenv automatically
+export PATH="$HOME/.rbenv/bin:$PATH"
+eval "$(rbenv init -)"
+
 # Stop any running instances of the app
 echo "Stopping any running PM2 processes for 'calendar'..."
 pm2 stop calendar || true
@@ -42,7 +48,6 @@ if [[ $? -ne 0 ]]; then
   exit 1
 fi
 
-# Install Ruby dependencies
 echo "Installing Ruby gems..."
 bundle install
 if [[ $? -ne 0 ]]; then
@@ -50,20 +55,13 @@ if [[ $? -ne 0 ]]; then
   exit 1
 fi
 
-# Precompile assets with a dummy secret key base
+# Precompile assets
 echo "Precompiling assets..."
 SECRET_KEY_BASE_DUMMY=1 bundle exec rails assets:precompile
 if [[ $? -ne 0 ]]; then
   echo "Failed to precompile assets. Exiting."
   exit 1
 fi
-
-# Set the actual SECRET_KEY_BASE environment variable
-export SECRET_KEY_BASE=your_generated_secret_key
-
-# Install PRIV & SERVER KEYS
-echo $PRIVATE_KEY > privatekey.pem
-echo $SERVER > server.crt
 
 # Start the app with PM2 in production mode
 echo "Starting the app in production mode with PM2..."
