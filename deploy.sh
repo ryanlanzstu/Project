@@ -43,7 +43,8 @@ if [[ $? -ne 0 ]]; then
   exit 1
 fi
 
-# Install PRIV & SERVER KEYS
+# Set up the private key and server certificate from environment variables
+echo "Setting up the private key and server certificate..."
 echo "$PRIVATE_KEY" > privatekey.pem
 echo "$SERVER" > server.crt
 
