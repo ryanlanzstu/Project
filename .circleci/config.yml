@@ -2,7 +2,7 @@ version: 2.1
 
 workflows:
   version: 2
-  build:
+  build_and_deploy:
     jobs:
       - build:
           filters:
@@ -56,4 +56,4 @@ jobs:
           command: chmod +x ~/Project/deploy.sh
       - run:
           name: Deploy application
-          command: ssh -o StrictHostKeyChecking=no $EC2_USERNAME@$EC2_PUBLIC_DNS "cd ~/Project && ./deploy.sh"
+          command: ssh -o StrictHostKeyChecking=no $EC2_USERNAME@$EC2_PUBLIC_DNS "cd ~/Project && sudo ./deploy.sh"
