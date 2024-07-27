@@ -32,40 +32,35 @@ fi
 
 # Stop any running instances of the app
 echo "Stopping any running PM2 processes for 'calendar'..."
-pm2 stop calendar
-# The stop command may fail if 'calendar' isn't already running, which isn't necessarily an error
+pm2 stop calendar || true
 
-# Install project dependencies
-echo "Installing project dependencies via npm..."
+# Install Node.js dependencies
+echo "Installing Node.js dependencies..."
 npm install
 if [[ $? -ne 0 ]]; then
   echo "Failed to install npm dependencies. Exiting."
   exit 1
 fi
 
-# Recreate credentials file
-echo "Recreating credentials file..."
-rm config/credentials.yml.enc
-EDITOR="nano" rails credentials:edit
+# Install Ruby dependencies
+echo "Installing Ruby gems..."
+gem install bundler
+bundle install
 if [[ $? -ne 0 ]]; then
-  echo "Failed to create credentials file. Exiting."
+  echo "Failed to install Ruby gems. Exiting."
   exit 1
 fi
 
-# Precompile assets with a dummy secret key base
-echo "Precompiling assets..."
-SECRET_KEY_BASE_DUMMY=1 bundle exec rails assets:precompile
-if [[ $? -ne 0 ]]; then
-  echo "Failed to precompile assets. Exiting."
+# Ensure PRIVATE_KEY and SERVER environment variables are set
+if [[ -z "$PRIVATE_KEY" ]] || [[ -z "$SERVER" ]]; then
+  echo "PRIVATE_KEY or SERVER environment variables are not set. Exiting."
   exit 1
 fi
-
-# Set the actual SECRET_KEY_BASE environment variable
-export SECRET_KEY_BASE=your_generated_secret_key
 
 # Install PRIV & SERVER KEYS
-echo $PRIVATE_KEY > privatekey.pem
-echo $SERVER > server.crt
+echo "Installing private and server keys..."
+echo "$PRIVATE_KEY" > privatekey.pem
+echo "$SERVER" > server.crt
 
 # Start the app with PM2 in production mode
 echo "Starting the app in production mode with PM2..."
