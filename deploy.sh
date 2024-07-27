@@ -36,6 +36,11 @@ fi
 export PATH="$HOME/.rbenv/bin:$PATH"
 eval "$(rbenv init -)"
 
+# Verify rbenv and ruby are properly loaded
+echo "rbenv version: $(rbenv -v)"
+echo "ruby version: $(ruby -v)"
+echo "bundler version: $(bundle -v)"
+
 # Stop any running instances of the app
 echo "Stopping any running PM2 processes for 'calendar'..."
 pm2 stop calendar || true
