@@ -43,6 +43,15 @@ if [[ $? -ne 0 ]]; then
   exit 1
 fi
 
+# Recreate credentials file
+echo "Recreating credentials file..."
+rm config/credentials.yml.enc
+EDITOR="nano" rails credentials:edit
+if [[ $? -ne 0 ]]; then
+  echo "Failed to create credentials file. Exiting."
+  exit 1
+fi
+
 # Precompile assets with a dummy secret key base
 echo "Precompiling assets..."
 SECRET_KEY_BASE_DUMMY=1 bundle exec rails assets:precompile
