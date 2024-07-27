@@ -34,8 +34,8 @@ fi
 echo "Stopping any running PM2 processes for 'calendar'..."
 pm2 stop calendar || true
 
-# Install Node.js dependencies
-echo "Installing Node.js dependencies..."
+# Install project dependencies
+echo "Installing project dependencies via npm..."
 npm install
 if [[ $? -ne 0 ]]; then
   echo "Failed to install npm dependencies. Exiting."
@@ -44,27 +44,30 @@ fi
 
 # Install Ruby dependencies
 echo "Installing Ruby gems..."
-gem install bundler
 bundle install
 if [[ $? -ne 0 ]]; then
   echo "Failed to install Ruby gems. Exiting."
   exit 1
 fi
 
-# Ensure PRIVATE_KEY and SERVER environment variables are set
-if [[ -z "$PRIVATE_KEY" ]] || [[ -z "$SERVER" ]]; then
-  echo "PRIVATE_KEY or SERVER environment variables are not set. Exiting."
+# Precompile assets with a dummy secret key base
+echo "Precompiling assets..."
+SECRET_KEY_BASE_DUMMY=1 bundle exec rails assets:precompile
+if [[ $? -ne 0 ]]; then
+  echo "Failed to precompile assets. Exiting."
   exit 1
 fi
 
+# Set the actual SECRET_KEY_BASE environment variable
+export SECRET_KEY_BASE=your_generated_secret_key
+
 # Install PRIV & SERVER KEYS
-echo "Installing private and server keys..."
-echo "$PRIVATE_KEY" > privatekey.pem
-echo "$SERVER" > server.crt
+echo $PRIVATE_KEY > privatekey.pem
+echo $SERVER > server.crt
 
 # Start the app with PM2 in production mode
 echo "Starting the app in production mode with PM2..."
-pm2 start ./bin/www --name calendar
+pm2 start --name calendar -- bundle exec rails server -b 0.0.0.0 -p 3000
 if [[ $? -ne 0 ]]; then
   echo "Failed to start the application with PM2. Exiting."
   exit 1
