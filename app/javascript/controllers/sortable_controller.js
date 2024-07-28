@@ -1,36 +1,58 @@
-import { Controller } from "@hotwired/stimulus"
+// app/javascript/controllers/sortable_controller.js
+import { Controller } from "stimulus"
 import Sortable from 'sortablejs';
-import { put } from '@rails/request.js'
+import interact from 'interactjs';
 
 export default class extends Controller {
-  static values = {
-    group: String
-  }
-
   connect() {
-    this.sortable = Sortable.create(this.element, {
-      group: this.groupValue,
-      animation: 150,
-      draggable: '.task, .event', // Only tasks and events are draggable
-      onEnd: this.onEnd.bind(this)
-    })
+    this.initSortable();
+    this.initResizable();
   }
 
-  onEnd(event) {
-    const sortableUpdateUrl = event.item.dataset.sortableUpdateUrl;
-    const newListId = event.to.closest('.list-container') ? event.to.closest('.list-container').dataset.sortableUpdateUrl : null;
-    const newDate = event.to.dataset.date || null;
+  initSortable() {
+    Sortable.create(this.element, {
+      onEnd: (event) => {
+        let url = this.data.get('url');
+        let csrfToken = document.querySelector("[name='csrf-token']").content;
 
-    let payload = { row_order_position: event.newIndex };
-    if (newListId) {
-      payload.list_id = newListId;
-    }
-    if (newDate) {
-      payload.date = newDate;
-    }
+        fetch(url, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-Token': csrfToken
+          },
+          body: JSON.stringify({
+            id: event.item.dataset.id,
+            position: event.newIndex
+          })
+        }).then(response => response.json())
+          .then(data => {
+            console.log('Updated successfully:', data);
+          })
+          .catch(error => console.error('Error updating:', error));
+      }
+    });
+  }
 
-    put(sortableUpdateUrl, {
-      body: JSON.stringify(payload)
-    })
+  initResizable() {
+    interact(this.element.querySelectorAll('.resizable')).resizable({
+      edges: { left: true, right: true, bottom: true, top: true },
+      listeners: {
+        move: function (event) {
+          let { x, y } = event.target.dataset;
+          x = (parseFloat(x) || 0) + event.deltaRect.left;
+          y = (parseFloat(y) || 0) + event.deltaRect.top;
+
+          Object.assign(event.target.style, {
+            width: event.rect.width + 'px',
+            height: event.rect.height + 'px',
+            transform: `translate(${x}px, ${y}px)`
+          });
+
+          event.target.dataset.x = x;
+          event.target.dataset.y = y;
+        }
+      }
+    });
   }
 }

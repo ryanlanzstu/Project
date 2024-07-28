@@ -1,21 +1,25 @@
 class TasksController < ApplicationController
   before_action :authenticate_user!
-  before_action :set_task, only: %i[show edit update destroy]
+  before_action :set_task, only: %i[show edit update destroy update_date sort]
 
   def index
     @tasks = current_user.tasks
   end
 
   def sort
-    @task = current_user.tasks.find(params[:id])
-    @task.update(row_order_position: params[:row_order_position], list_id: params[:list_id])
-    head :no_content
+    if @task.update(row_order_position: params[:row_order_position], list_id: params[:list_id])
+      head :no_content  # No content to send back on successful update
+    else
+      render json: @task.errors.full_messages, status: :unprocessable_entity
+    end
   end
 
   def update_date
-    @task = current_user.tasks.find(params[:id])
-    @task.update(start_date: params[:date])
-    head :no_content
+    if @task.update(start_date: params[:date])
+      render json: { status: 'success' }, status: :ok
+    else
+      render json: @task.errors.full_messages, status: :unprocessable_entity
+    end
   end
 
   def show

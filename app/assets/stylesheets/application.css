@@ -61,3 +61,11 @@
 .bg-rose-200 {
   background-color: #fed7d7; 
 }
+
+.resizable {
+  padding: 10px;
+  border: 1px solid #ccc;
+  resize: both;
+  overflow: auto;
+}
+

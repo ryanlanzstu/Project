@@ -1,78 +1,78 @@
 #!/bin/bash
 
-# Ensuring the script is run with sudo or root privileges
+#Run with sudo to fix issues
 if [[ $(id -u) -ne 0 ]]; then
-  echo "This script must be run as root or with sudo."
+  echo "Must run as root/sudo"
   exit 1
 fi
 
-echo "Deploying application..."
+echo "Deploying app"
 
-# Update system packages and install Node.js and npm
-echo "Updating system packages and installing Node.js and npm..."
+#Install Node.js and npm
+echo "Install node&npm"
 sudo apt update && sudo apt install -y nodejs npm ruby-full build-essential zlib1g-dev
 if [[ $? -ne 0 ]]; then
-  echo "Failed to install Node.js or npm. Exiting."
+  echo "Failed to install Node.js or npm"
   exit 1
 fi
 
-# Install PM2 globally
+#Install pm2 
 echo "Installing PM2 globally..."
 sudo npm install -g pm2
 if [[ $? -ne 0 ]]; then
-  echo "Failed to install PM2. Exiting."
+  echo "Failed to install PM2"
   exit 1
 fi
 
-# Navigate to the project directory
-echo "Changing directory to the project..."
+#Go to directory
+echo "Going to project directory"
 cd /home/ubuntu/Project
 if [[ $? -ne 0 ]]; then
-  echo "Failed to navigate to /home/ubuntu/Project. Exiting."
+  echo "Failed to find project."
   exit 1
 fi
 
-# Load rbenv automatically
+#Load rbenv
 export PATH="$HOME/.rbenv/bin:$PATH"
 eval "$(rbenv init -)"
 
-# Verify rbenv and ruby are properly loaded
+#Check env running
 echo "rbenv version: $(rbenv -v)"
 echo "ruby version: $(ruby -v)"
 echo "bundler version: $(bundle -v)"
 
-# Stop any running instances of the app
-echo "Stopping any running PM2 processes for 'calendar'..."
+#Stop running insts
+echo "Stopping any running instances"
 pm2 stop calendar || true
 
-# Install project dependencies
-echo "Installing project dependencies via npm..."
+#Install dependencies
+echo "Installing depdendencies"
 npm install
 if [[ $? -ne 0 ]]; then
-  echo "Failed to install npm dependencies. Exiting."
+  echo "Failed to install npm dependencies."
   exit 1
 fi
 
-echo "Installing Ruby gems..."
+echo "Installing gems"
 bundle install
 if [[ $? -ne 0 ]]; then
-  echo "Failed to install Ruby gems. Exiting."
+  echo "Failed to install gems."
   exit 1
 fi
 
-# Precompile assets
+#Precomp assets
 echo "Precompiling assets..."
 SECRET_KEY_BASE_DUMMY=1 bundle exec rails assets:precompile
 if [[ $? -ne 0 ]]; then
-  echo "Failed to precompile assets. Exiting."
+  echo "Failed to precompile assets."
   exit 1
 fi
 
-# Start the app with PM2 in production mode
+#Start pm2 in prod mode
 echo "Starting the app in production mode with PM2..."
 pm2 start --name calendar -- bundle exec rails server -b 0.0.0.0 -p 3000
 if [[ $? -ne 0 ]]; then
-  echo "Failed to start the application with PM2. Exiting."
+  echo "Failed to start the application with PM2."
   exit 1
 fi
 
