@@ -64,3 +64,7 @@ production:
   password: <%= ENV["CALENDAR_DATABASE_PASSWORD"] %>
   host: localhost
   port: 5432
+
+production:
+  <<: *default
+  url: <%= ENV['DATABASE_URL'] %>
