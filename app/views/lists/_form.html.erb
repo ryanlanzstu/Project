@@ -2,7 +2,6 @@
   <% if list.errors.any? %>
     <div style="color: red">
       <h2><%= pluralize(list.errors.count, "error") %> prohibited this list from being saved:</h2>
-
       <ul>
         <% list.errors.each do |error| %>
           <li><%= error.full_message %></li>
@@ -15,6 +14,9 @@
     <%= form.label :name, style: "display: block" %>
     <%= form.text_field :name %>
   </div>
+
+  <!-- reCAPTCHA widget -->
+  <div class="g-recaptcha" data-sitekey="your-site-key"></div>
 
   <div>
     <%= form.submit %>
