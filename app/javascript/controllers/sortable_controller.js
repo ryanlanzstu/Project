@@ -1,5 +1,5 @@
 // app/javascript/controllers/sortable_controller.js
-import { Controller } from "stimulus"
+import { Controller } from "stimulus";
 import Sortable from 'sortablejs';
 import interact from 'interactjs';
 
@@ -15,7 +15,7 @@ export default class extends Controller {
         let url = this.data.get('url');
         let csrfToken = document.querySelector("[name='csrf-token']").content;
 
-        fetch(url, {
+        this.fetchWithTimeout(url, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -25,11 +25,12 @@ export default class extends Controller {
             id: event.item.dataset.id,
             position: event.newIndex
           })
-        }).then(response => response.json())
-          .then(data => {
-            console.log('Updated successfully:', data);
-          })
-          .catch(error => console.error('Error updating:', error));
+        }, 5000) // 5 seconds timeout
+        .then(response => response.json())
+        .then(data => {
+          console.log('Updated successfully:', data);
+        })
+        .catch(error => console.error('Error updating:', error));
       }
     });
   }
@@ -54,5 +55,15 @@ export default class extends Controller {
         }
       }
     });
+  }
+
+  // Helper function to handle fetch with timeout
+  fetchWithTimeout(url, options, timeout = 5000) {
+    return Promise.race([
+      fetch(url, options),
+      new Promise((_, reject) =>
+        setTimeout(() => reject(new Error('Timeout')), timeout)
+      )
+    ]);
   }
 }
