@@ -83,3 +83,5 @@ gem 'acts_as_list'
 
 # Tailwind CSS
 gem 'tailwindcss-rails'
+
+gem 'recaptcha'
