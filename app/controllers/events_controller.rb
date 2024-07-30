@@ -5,10 +5,12 @@ class EventsController < ApplicationController
   # GET /events or /events.json
   def index
     @events = Event.all
+    @lists = List.includes(:tasks).where(user: current_user)
   end
 
   # GET /events/1 or /events/1.json
   def show
+    @lists = List.includes(:tasks).where(user: current_user)
   end
 
   # GET /events/new
