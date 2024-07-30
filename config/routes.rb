@@ -3,7 +3,6 @@ Rails.application.routes.draw do
     member do
       put :sort
       patch :update_date
-      patch :move
     end
   end
 
