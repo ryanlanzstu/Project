@@ -1,14 +1,65 @@
 <p style="color: green"><%= notice %></p>
 
-<h1>Events</h1>
+<div class="container">
+  <div class="lists">
+    <h2>Lists</h2>
+    <div id="lists" class="sortable">
+      <% @lists.each do |list| %>
+        <div class="list" data-list-id="<%= list.id %>">
+          <h3><%= list.name %></h3>
+          <div class="tasks sortable" data-list-id="<%= list.id %>">
+            <% list.tasks.each do |task| %>
+              <div class="task" data-task-id="<%= task.id %>">
+                <%= task.name %>
+              </div>
+            <% end %>
+          </div>
+        </div>
+      <% end %>
+    </div>
+  </div>
 
-<div id="events">
-  <% @events.each do |event| %>
-    <%= render event %>
-    <p>
-      <%= link_to "Show this event", event %>
-    </p>
-  <% end %>
+  <div class="calendar">
+    <h1>Events</h1>
+    <div id="events">
+      <% @events.each do |event| %>
+        <%= render event %>
+        <p>
+          <%= link_to "Show this event", event %>
+        </p>
+      <% end %>
+    </div>
+    <%= link_to "New event", new_event_path %>
+  </div>
 </div>
 
-<%= link_to "New event", new_event_path %>
+<script>
+  document.addEventListener("turbolinks:load", function() {
+    var sortableElements = document.querySelectorAll('.sortable');
+
+    sortableElements.forEach(function(sortableElement) {
+      new Sortable(sortableElement, {
+        group: 'shared',
+        animation: 150,
+        onEnd: function(evt) {
+          var itemEl = evt.item;
+          var oldListId = evt.from.dataset.listId;
+          var newListId = evt.to.dataset.listId;
+          var taskId = itemEl.dataset.taskId;
+
+          if (oldListId !== newListId) {
+            // Perform an AJAX request to update the task's list_id
+            fetch(`/tasks/${taskId}/move`, {
+              method: 'PATCH',
+              headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-Token': Rails.csrfToken()
+              },
+              body: JSON.stringify({ task: { list_id: newListId } })
+            });
+          }
+        }
+      });
+    });
+  });
+</script>

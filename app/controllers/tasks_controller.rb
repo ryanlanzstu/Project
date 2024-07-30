@@ -1,6 +1,6 @@
 class TasksController < ApplicationController
   before_action :authenticate_user!
-  before_action :set_task, only: %i[show edit update destroy update_date sort]
+  before_action :set_task, only: %i[show edit update destroy update_date sort move]
 
   def index
     @tasks = current_user.tasks
@@ -19,6 +19,14 @@ class TasksController < ApplicationController
       render json: { status: 'success' }, status: :ok
     else
       render json: @task.errors.full_messages, status: :unprocessable_entity
+    end
+  end
+
+  def move
+    if @task.update(task_params)
+      head :ok
+    else
+      head :unprocessable_entity
     end
   end
 
