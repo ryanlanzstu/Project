@@ -1,80 +1,84 @@
-<div class="container mt-5 text-center">
-  <h1>Calendar</h1>
-  <h2><%= link_to "Create New Event", new_event_path, class: "btn btn-primary" %></h2>
+<p style="color: green"><%= notice %></p>
 
-  <%= link_to "<", calendar_month_path(date: @date - 1.month) %>
-  <%= link_to "Today", calendar_month_path %>
-  <%= link_to ">", calendar_month_path(date: @date + 1.month) %>
-
-  <%= @date.strftime('%B %Y') %>
-
-  <div class="container">
-    <div class="row">
-      <div class="col-md-4 lists">
-        <h2>Lists</h2>
-        <div id="lists" class="sortable">
-          <% @lists.each do |list| %>
-            <div class="list" data-list-id="<%= list.id %>">
-              <h3><%= list.name %></h3>
-              <div class="tasks sortable" data-list-id="<%= list.id %>">
-                <% list.tasks.each do |task| %>
-                  <div class="task" data-task-id="<%= task.id %>">
-                    <%= task.name %>
-                  </div>
-                <% end %>
-              </div>
-            </div>
-          <% end %>
-        </div>
-      </div>
-
-      <div class="col-md-8 calendar">
-        <div class="grid grid-cols-7">
-          <% Date::ABBR_DAYNAMES.rotate.each do |weekday| %>
-            <div>
-              <%= weekday %>
-            </div>
-          <% end %>
-          <% @date.beginning_of_month.wday.times do %>
-            <div></div>
-          <% end %>
-          <% @date.all_month.each do |day| %>
-            <div class="border min-h-24 <%= "bg-blue-200" if day == Date.today %>">
-              <%= day.strftime('%d') %>
-              <% @tasks.each do |task| %>
-                <% if task.start_date.to_date == day %>
-                  <div class="card mt-2">
-                    <div class="card-header">
-                      <div class="card-title">
-                        <%= link_to task.title, task %>
-                      </div>
-                    </div>
-                    <div class="card-body">
-                      <p class="card-text">
-                        <%= task.description %>
-                      </p>
-                    </div>
-                    <div class="card-footer">
-                      <p class="card-text">
-                        From: <%= task.start_date.strftime('%A, %B %d, %Y, at %I:%M %p') %>
-                      </p>
-                      <p class="card-text">
-                        To: <%= task.end_date.strftime('%A, %B %d, %Y, at %I:%M %p') %>
-                      </p>
-                    </div>
-                  </div>
-                <% end %>
+<div class="container">
+  <div class="lists">
+    <h2>Lists</h2>
+    <div id="lists" class="sortable" data-controller="sortable" data-sortable-group-value="lists">
+      <% if @lists.present? %>
+        <% @lists.each do |list| %>
+          <div class="list sticky-note" data-id="<%= list.id %>">
+            <h3><%= list.name %></h3>
+            <div class="tasks sortable" data-list-id="<%= list.id %>" data-controller="sortable" data-sortable-url="/tasks/sort">
+              <% list.tasks.each do |task| %>
+                <div class="task" data-id="<%= task.id %>">
+                  <%= task.name %>
+                </div>
               <% end %>
             </div>
-          <% end %>
+          </div>
+        <% end %>
+      <% else %>
+        <p>No lists found.</p>
+      <% end %>
+    </div>
+  </div>
+
+  <div class="calendar">
+    <h1><%= @date.strftime('%B %Y') %></h1>
+    <div class="grid grid-cols-7">
+      <div>Mon</div>
+      <div>Tue</div>
+      <div>Wed</div>
+      <div>Thu</div>
+      <div>Fri</div>
+      <div>Sat</div>
+      <div>Sun</div>
+      <% (1..@date.end_of_month.day).each do |day| %>
+        <div class="border min-h-24">
+          <div class="date"><%= day %></div>
+          <div id="day-<%= @date.strftime('%Y-%m') %>-<%= '%02d' % day %>" class="task-dropzone sortable" data-controller="sortable" data-sortable-url="/tasks/update_date" data-date="<%= @date.strftime('%Y-%m') %>-<%= '%02d' % day %>">
+            <% @tasks.each do |task| %>
+              <% if task.start_date.present? && task.start_date.to_date == Date.new(@date.year, @date.month, day) %>
+                <div class="task" data-id="<%= task.id %>">
+                  <%= task.name %>
+                </div>
+              <% end %>
+            <% end %>
+          </div>
         </div>
-      </div>
+      <% end %>
     </div>
   </div>
 </div>
 
 <script>
   document.addEventListener('turbolinks:load', function() {
+    const lists = document.querySelectorAll('#lists .sortable');
+
+    lists.forEach(list => {
+      new Sortable(list, {
+        group: {
+          name: 'lists',
+          pull: true,
+          put: true
+        },
+        animation: 150,
+        onEnd: function(evt) {
+          const taskId = evt.item.dataset.id;
+          const newListId = evt.to.closest('.tasks').dataset.listId;
+
+          fetch(`/tasks/${taskId}/sort`, {
+            method: 'PATCH',
+            headers: {
+              'Content-Type': 'application/json',
+              'X-CSRF-Token': document.querySelector('meta[name="csrf-token"]').content
+            },
+            body: JSON.stringify({ list_id: newListId })
+          });
+        }
+      });
+    });
+
     const dropzones = document.querySelectorAll('.task-dropzone');
 
     dropzones.forEach(dropzone => {
@@ -82,7 +86,7 @@
         group: 'tasks',
         animation: 150,
         onEnd: function(evt) {
-          const taskId = evt.item.dataset.taskId;
+          const taskId = evt.item.dataset.id;
           const newDate = evt.to.dataset.date;
 
           fetch(`/tasks/${taskId}/update_date`, {

@@ -3,7 +3,7 @@
 <div class="container">
   <div class="lists">
     <h2>Lists</h2>
-    <div id="lists" class="sortable" data-controller="sortable" data-sortable-group-value="tasks">
+    <div id="lists" class="sortable" data-controller="sortable" data-sortable-group-value="lists">
       <% if @lists.present? %>
         <% @lists.each do |list| %>
           <div class="list sticky-note" data-id="<%= list.id %>" data-sortable-url="<%= sort_list_path(list) %>">
@@ -65,7 +65,7 @@
         animation: 150,
         onEnd: function(evt) {
           const taskId = evt.item.dataset.id;
-          const newListId = evt.to.dataset.listId;
+          const newListId = evt.to.closest('.tasks').dataset.listId;
 
           if (newListId) {
             fetch(`/tasks/${taskId}/sort`, {
@@ -100,7 +100,7 @@
               method: 'PATCH',
               headers: {
                 'Content-Type': 'application/json',
-                'X-CSRF-Token': document.querySelector('meta[name="csrf-token']").content
+                'X-CSRF-Token': document.querySelector('meta[name="csrf-token"]').content
               },
               body: JSON.stringify({ date: newDate })
             });
