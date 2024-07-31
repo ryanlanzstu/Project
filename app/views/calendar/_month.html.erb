@@ -6,7 +6,7 @@
     <div id="lists" class="sortable" data-controller="sortable" data-sortable-group-value="lists">
       <% if @lists.present? %>
         <% @lists.each do |list| %>
-          <div class="list sticky-note" data-id="<%= list.id %>">
+          <div class="list sticky-note" data-id="<%= list.id %>" data-sortable-url="<%= sort_list_path(list) %>">
             <h3><%= list.name %></h3>
             <div class="tasks sortable" data-list-id="<%= list.id %>" data-controller="sortable" data-sortable-url="/tasks/sort">
               <% list.tasks.each do |task| %>
@@ -67,7 +67,7 @@
             method: 'PATCH',
             headers: {
               'Content-Type': 'application/json',
-              'X-CSRF-Token': document.querySelector('meta[name="csrf-token"]').content
+              'X-CSRF-Token': document.querySelector('meta[name="csrf-token']").content
             },
             body: JSON.stringify({ list_id: newListId })
           });
