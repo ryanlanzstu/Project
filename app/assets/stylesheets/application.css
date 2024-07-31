@@ -1,6 +1,4 @@
-/* app/assets/stylesheets/application.css or application.scss */
-
-/* Adds sticky note look to each list!! */
+/* Adds sticky note look to each list */
 .sticky-note {
   background-color: #fdfd86; /* Light yellow, typical sticky note color */
   box-shadow: 5px 5px 15px rgba(0,0,0,0.2); /* Adds a subtle shadow */
@@ -22,6 +20,16 @@
 
 .sticky-note:nth-child(even) {
   transform: rotate(2deg);
+}
+
+/* Task list style for indentation and bulletins */
+.tasks {
+  padding-left: 20px; /* Indentation for tasks */
+}
+.tasks .task {
+  list-style-type: disc; /* Adds bullet points */
+  margin-left: 20px; /* Indentation for tasks */
+  padding-left: 10px; /* Space between bullet and text */
 }
 
 /* Grid for calendar */

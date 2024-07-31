@@ -8,13 +8,13 @@
         <% @lists.each do |list| %>
           <div class="list sticky-note" data-id="<%= list.id %>" data-sortable-url="<%= sort_list_path(list) %>">
             <h3><%= list.name %></h3>
-            <div class="tasks sortable" data-list-id="<%= list.id %>" data-controller="sortable" data-sortable-group-value="tasks" data-sortable-url="/tasks/sort">
+            <ul class="tasks sortable" data-list-id="<%= list.id %>" data-controller="sortable" data-sortable-group-value="tasks" data-sortable-url="/tasks/sort">
               <% list.tasks.each do |task| %>
-                <div class="task" data-id="<%= task.id %>">
+                <li class="task" data-id="<%= task.id %>">
                   <%= task.name %>
-                </div>
+                </li>
               <% end %>
-            </div>
+            </ul>
           </div>
         <% end %>
       <% else %>
@@ -37,13 +37,15 @@
         <div class="border min-h-24">
           <div class="date"><%= day %></div>
           <div id="day-<%= @date.strftime('%Y-%m') %>-<%= '%02d' % day %>" class="task-dropzone sortable" data-controller="sortable" data-sortable-group-value="tasks" data-sortable-url="/tasks/update_date" data-date="<%= @date.strftime('%Y-%m') %>-<%= '%02d' % day %>">
-            <% @tasks.each do |task| %>
-              <% if task.start_date.present? && task.start_date.to_date == Date.new(@date.year, @date.month, day) %>
-                <div class="task" data-id="<%= task.id %>">
-                  <%= task.name %>
-                </div>
+            <ul>
+              <% @tasks.each do |task| %>
+                <% if task.start_date.present? && task.start_date.to_date == Date.new(@date.year, @date.month, day) %>
+                  <li class="task" data-id="<%= task.id %>">
+                    <%= task.name %>
+                  </li>
+                <% end %>
               <% end %>
-            <% end %>
+            </ul>
           </div>
         </div>
       <% end %>
@@ -53,7 +55,7 @@
 
 <script>
   document.addEventListener('turbolinks:load', function() {
-    const lists = document.querySelectorAll('.tasks');
+    const lists = document.querySelectorAll('#lists .tasks');
 
     lists.forEach(list => {
       new Sortable(list, {
@@ -72,7 +74,7 @@
               method: 'PATCH',
               headers: {
                 'Content-Type': 'application/json',
-                'X-CSRF-Token': document.querySelector('meta[name="csrf-token"]').content
+                'X-CSRF-Token': document.querySelector('meta[name="csrf-token']").content
               },
               body: JSON.stringify({ list_id: newListId })
             });
