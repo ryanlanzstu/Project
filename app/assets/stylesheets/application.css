@@ -1,20 +1,3 @@
-/*
- * This is a manifest file that'll be compiled into application.css, which will include all the files
- * listed below.
- *
- * Any CSS (and SCSS, if configured) file within this directory, lib/assets/stylesheets, or any plugin's
- * vendor/assets/stylesheets directory can be referenced here using a relative path.
- *
- * You're free to add application-wide styles to this file and they'll appear at the bottom of the
- * compiled file so the styles you add here take precedence over styles defined in any other CSS
- * files in this directory. Styles in this file should be added after the last require_* statement.
- * It is generally better to create a new file per style scope.
- *
- *= require_tree .
- *= require_self
- *= require application.tailwind
- */
-
 /* Adds sticky note look to each list!! */
 .sticky-note {
   background-color: #fdfd86; /* Light yellow, typical sticky note color */
@@ -26,6 +9,8 @@
   font-size: 16px; /* Adjust as needed */
   max-width: 200px; /* Maximum width of the sticky note */
   word-wrap: break-word; /* Ensures the content breaks to avoid overflow */
+  overflow: hidden; /* Prevents overflow of tasks outside the sticky note */
+  position: relative; /* Ensures sticky note's children are positioned relative to it */
 }
 
 /* Optional: Add some tilt to the sticky notes for a more dynamic look */
@@ -60,11 +45,4 @@
 
 .bg-rose-200 {
   background-color: #fed7d7; 
-}
-
-.resizable {
-  padding: 10px;
-  border: 1px solid #ccc;
-  resize: both;
-  overflow: auto;
 }

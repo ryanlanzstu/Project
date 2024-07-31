@@ -3,12 +3,12 @@
 <div class="container">
   <div class="lists">
     <h2>Lists</h2>
-    <div id="lists" class="sortable" data-controller="sortable" data-sortable-group-value="lists">
+    <div id="lists" class="sortable" data-controller="sortable" data-sortable-group-value="tasks">
       <% if @lists.present? %>
         <% @lists.each do |list| %>
           <div class="list sticky-note" data-id="<%= list.id %>" data-sortable-url="<%= sort_list_path(list) %>">
             <h3><%= list.name %></h3>
-            <div class="tasks sortable" data-list-id="<%= list.id %>" data-controller="sortable" data-sortable-url="/tasks/sort">
+            <div class="tasks sortable" data-list-id="<%= list.id %>" data-controller="sortable" data-sortable-group-value="tasks" data-sortable-url="/tasks/sort">
               <% list.tasks.each do |task| %>
                 <div class="task" data-id="<%= task.id %>">
                   <%= task.name %>
@@ -36,7 +36,7 @@
       <% (1..@date.end_of_month.day).each do |day| %>
         <div class="border min-h-24">
           <div class="date"><%= day %></div>
-          <div id="day-<%= @date.strftime('%Y-%m') %>-<%= '%02d' % day %>" class="task-dropzone sortable" data-controller="sortable" data-sortable-url="/tasks/update_date" data-date="<%= @date.strftime('%Y-%m') %>-<%= '%02d' % day %>">
+          <div id="day-<%= @date.strftime('%Y-%m') %>-<%= '%02d' % day %>" class="task-dropzone sortable" data-controller="sortable" data-sortable-group-value="tasks" data-sortable-url="/tasks/update_date" data-date="<%= @date.strftime('%Y-%m') %>-<%= '%02d' % day %>">
             <% @tasks.each do |task| %>
               <% if task.start_date.present? && task.start_date.to_date == Date.new(@date.year, @date.month, day) %>
                 <div class="task" data-id="<%= task.id %>">
@@ -53,24 +53,30 @@
 
 <script>
   document.addEventListener('turbolinks:load', function() {
-    const lists = document.querySelectorAll('#lists .sortable');
+    const lists = document.querySelectorAll('.tasks');
 
     lists.forEach(list => {
       new Sortable(list, {
-        group: 'tasks',
+        group: {
+          name: 'tasks',
+          pull: true,
+          put: true
+        },
         animation: 150,
         onEnd: function(evt) {
           const taskId = evt.item.dataset.id;
           const newListId = evt.to.dataset.listId;
 
-          fetch(`/tasks/${taskId}/sort`, {
-            method: 'PATCH',
-            headers: {
-              'Content-Type': 'application/json',
-              'X-CSRF-Token': document.querySelector('meta[name="csrf-token']").content
-            },
-            body: JSON.stringify({ list_id: newListId })
-          });
+          if (newListId) {
+            fetch(`/tasks/${taskId}/sort`, {
+              method: 'PATCH',
+              headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-Token': document.querySelector('meta[name="csrf-token"]').content
+              },
+              body: JSON.stringify({ list_id: newListId })
+            });
+          }
         }
       });
     });
@@ -79,20 +85,26 @@
 
     dropzones.forEach(dropzone => {
       new Sortable(dropzone, {
-        group: 'tasks',
+        group: {
+          name: 'tasks',
+          pull: true,
+          put: true
+        },
         animation: 150,
         onEnd: function(evt) {
           const taskId = evt.item.dataset.id;
           const newDate = evt.to.dataset.date;
 
-          fetch(`/tasks/${taskId}/update_date`, {
-            method: 'PATCH',
-            headers: {
-              'Content-Type': 'application/json',
-              'X-CSRF-Token': document.querySelector('meta[name="csrf-token']").content
-            },
-            body: JSON.stringify({ date: newDate })
-          });
+          if (newDate) {
+            fetch(`/tasks/${taskId}/update_date`, {
+              method: 'PATCH',
+              headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-Token': document.querySelector('meta[name="csrf-token']").content
+              },
+              body: JSON.stringify({ date: newDate })
+            });
+          }
         }
       });
     });
