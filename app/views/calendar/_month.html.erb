@@ -21,6 +21,12 @@
         <p>No lists found.</p>
       <% end %>
     </div>
+    <!-- Add buttons here inside the lists container -->
+    <div class="list-actions">
+      <%= link_to 'New List', new_list_path, class: 'btn btn-primary' %>
+      <%= link_to 'New Task', new_task_path, class: 'btn btn-primary' %>
+      <%= link_to 'New Event', new_event_path, class: 'btn btn-primary' %>
+    </div>
   </div>
 
   <div class="calendar">
@@ -42,6 +48,13 @@
                 <% if task.start_date.present? && task.start_date.to_date == Date.new(@date.year, @date.month, day) %>
                   <li class="task" data-id="<%= task.id %>">
                     <%= task.name %>
+                  </li>
+                <% end %>
+              <% end %>
+              <% if @events[Date.new(@date.year, @date.month, day)] %>
+                <% @events[Date.new(@date.year, @date.month, day)].each do |event| %>
+                  <li class="event" data-id="<%= event.id %>">
+                    <%= event.title %>
                   </li>
                 <% end %>
               <% end %>
