@@ -1,10 +1,11 @@
 // app/javascript/controllers/sortable_controller.js
-import { Controller } from "stimulus";
-import Sortable from "sortablejs";
+
+import { Controller } from "@hotwired/stimulus"
+import Sortable from "sortablejs"
 
 export default class extends Controller {
   connect() {
-    this.initSortable();
+    this.initSortable()
   }
 
   initSortable() {
@@ -14,13 +15,13 @@ export default class extends Controller {
         pull: true,
         put: (to) => {
           // Ensure the task can only be dropped within another task list
-          return to.el.classList.contains('tasks');
+          return to.el.classList.contains('tasks')
         }
       },
       animation: 150,
       onEnd: (event) => {
-        let url = this.element.dataset.sortableUrl;
-        let csrfToken = document.querySelector("[name='csrf-token']").content;
+        let url = this.element.dataset.sortableUrl
+        let csrfToken = document.querySelector("[name='csrf-token']").content
 
         fetch(url, {
           method: 'PATCH',
@@ -37,10 +38,10 @@ export default class extends Controller {
         })
         .then(response => response.json())
         .then(data => {
-          console.log('Updated successfully:', data);
+          console.log('Updated successfully:', data)
         })
-        .catch(error => console.error('Error updating:', error));
+        .catch(error => console.error('Error updating:', error))
       }
-    });
+    })
   }
 }

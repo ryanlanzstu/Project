@@ -11,13 +11,10 @@
 # It's strongly recommended that you check this file into your version control system.
 
 ActiveRecord::Schema[7.0].define(version: 2024_07_28_144821) do
-  # These are extensions that must be enabled in order to support this database
-  enable_extension "plpgsql"
-
   create_table "collegemodules", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.bigint "user_id", null: false
+    t.integer "user_id", null: false
     t.string "module_name"
     t.string "module_id"
     t.string "module_lecturer"
@@ -31,7 +28,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_07_28_144821) do
     t.datetime "end_time"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.bigint "user_id", default: 1, null: false
+    t.integer "user_id", default: 1, null: false
     t.index ["user_id"], name: "index_events_on_user_id"
   end
 
@@ -45,11 +42,11 @@ ActiveRecord::Schema[7.0].define(version: 2024_07_28_144821) do
 
   create_table "tasks", force: :cascade do |t|
     t.string "name"
-    t.bigint "list_id", null: false
+    t.integer "list_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.integer "row_order"
-    t.bigint "user_id"
+    t.integer "user_id"
     t.date "start_date"
     t.index ["list_id"], name: "index_tasks_on_list_id"
     t.index ["user_id"], name: "index_tasks_on_user_id"

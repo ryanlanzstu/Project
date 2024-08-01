@@ -15,8 +15,6 @@ gem "pg", "~> 1.2"
 # Use the Puma web server [https://github.com/puma/puma]
 gem "puma", "~> 5.0"
 
-# Use JavaScript with ESM import maps [https://github.com/rails/importmap-rails]
-gem "importmap-rails"
 
 # Hotwire's SPA-like page accelerator [https://turbo.hotwired.dev]
 gem "turbo-rails"
@@ -85,3 +83,10 @@ gem 'acts_as_list'
 gem 'tailwindcss-rails'
 
 gem 'recaptcha'
+
+group :development do
+  gem 'sqlite3', '~> 1.4'
+end
+
+gem "importmap-rails"
+
