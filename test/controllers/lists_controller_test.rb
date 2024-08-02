@@ -50,7 +50,7 @@ class ListsControllerTest < ActionDispatch::IntegrationTest
 
   private
 
-  #Use helper to sign in
+  #Use helper to sign in for authentication
   def sign_in_as(user)
     post user_session_url, params: { user: { email: user.email, password: 'password' } }
   end
