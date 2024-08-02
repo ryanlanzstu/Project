@@ -2,7 +2,9 @@ require "test_helper"
 
 class TasksControllerTest < ActionDispatch::IntegrationTest
   setup do
+    @user = users(:one)
     @task = tasks(:one)
+    sign_in_as(@user) # Custom method to sign in as user
   end
 
   test "should get index" do
@@ -17,7 +19,7 @@ class TasksControllerTest < ActionDispatch::IntegrationTest
 
   test "should create task" do
     assert_difference("Task.count") do
-      post tasks_url, params: { task: { list_id: @task.list_id, name: @task.name } }
+      post tasks_url, params: { task: { list_id: @task.list_id, name: "New Task", user_id: @user.id } }
     end
 
     assert_redirected_to task_url(Task.last)
@@ -34,7 +36,7 @@ class TasksControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "should update task" do
-    patch task_url(@task), params: { task: { list_id: @task.list_id, name: @task.name } }
+    patch task_url(@task), params: { task: { list_id: @task.list_id, name: "Updated Task" } }
     assert_redirected_to task_url(@task)
   end
 
@@ -44,5 +46,12 @@ class TasksControllerTest < ActionDispatch::IntegrationTest
     end
 
     assert_redirected_to tasks_url
+  end
+
+  private
+
+  #Use helper to sign in
+  def sign_in_as(user)
+    post user_session_url, params: { user: { email: user.email, password: 'password' } }
   end
 end
