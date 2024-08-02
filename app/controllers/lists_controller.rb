@@ -32,7 +32,7 @@ class ListsController < ApplicationController
   def create
     @list = current_user.lists.build(list_params)
     respond_to do |format|
-      if verify_recaptcha(model: @list) && @list.save
+      if @list.save
         format.html { redirect_to list_url(@list), notice: "List was successfully created." }
         format.json { render :show, status: :created, location: @list }
       else
@@ -45,7 +45,7 @@ class ListsController < ApplicationController
   # PATCH/PUT /lists/1 or /lists/1.json
   def update
     respond_to do |format|
-      if verify_recaptcha(model: @list) && @list.update(list_params)
+      if @list.update(list_params)
         format.html { redirect_to list_url(@list), notice: "List was successfully updated." }
         format.json { render :show, status: :ok, location: @list }
       else

@@ -82,8 +82,6 @@ gem 'acts_as_list'
 # Tailwind CSS
 gem 'tailwindcss-rails'
 
-gem 'recaptcha'
-
 group :development do
   gem 'sqlite3', '~> 1.4'
 end
