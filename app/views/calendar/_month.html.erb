@@ -2,6 +2,7 @@
 
 <div class="container">
   <div class="row">
+    <!-- Lists Column -->
     <div class="col-md-4 lists">
       <h2>Lists</h2>
       <div id="lists" class="sortable">
@@ -22,8 +23,16 @@
           <p>No lists found.</p>
         <% end %>
       </div>
+
+      <!-- New List and Task Buttons -->
+      <div class="new-buttons mt-4">
+        <%= link_to 'New List', new_list_path, class: 'btn btn-primary mb-2' %>
+        <%= link_to 'New Task', new_task_path, class: 'btn btn-primary' %>
+        <%= link_to "New Event", new_event_path, class: 'btn btn-primary' %>
+      </div>
     </div>
 
+    <!-- Calendar Column -->
     <div class="col-md-8 calendar">
       <h1><%= @date.strftime('%B %Y') %></h1>
       <div class="grid grid-cols-7">
@@ -56,9 +65,6 @@
     </div>
   </div>
 </div>
-
-<%= link_to 'New List', new_list_path, class: 'btn btn-primary' %>
-<%= link_to "New Task", new_task_path, class: 'btn btn-primary' %>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.10.2/Sortable.min.js"></script>
 <script>
