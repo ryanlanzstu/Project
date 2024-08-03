@@ -10,7 +10,7 @@
           <% @lists.each do |list| %>
             <li data-sortable-update-url="<%= sort_list_path(list) %>" class="list-container me-3 mb-3" style="min-width: 200px;">
               <div class="sticky-note">
-                <h3><%= list.name %></h3>
+                <h4><%= list.name %> (ID: <%= list.id %>)</h4>
                 <div>
                   <%= link_to "Edit List", edit_list_path(list), class: 'text-decoration-none me-2' %>
                   <%= button_to "Delete List", list, method: :delete, data: { confirm: 'Are you sure?' }, class: 'text-decoration-none text-danger' %>
