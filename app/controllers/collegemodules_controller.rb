@@ -59,12 +59,12 @@ class CollegemodulesController < ApplicationController
   end
 
   private
-    # Use callbacks to share common setup or constraints between actions.
+    #Callback for setup constraints
     def set_collegemodule
       @collegemodule = current_user.collegemodules.find(params[:id])
     end
 
-    # Only allow a list of trusted parameters through.
+    #Only works for trusted params
     def collegemodule_params
       params.require(:collegemodule).permit(:module_name, :module_id, :module_lecturer)
     end

@@ -7,7 +7,7 @@ class TasksController < ApplicationController
   end
   def sort
     if @task.update(row_order_position: params[:row_order_position], list_id: params[:list_id])
-      head :no_content  # No content to send back on successful update
+      head :no_content  #When updates successful, doesn't send content back
     else
       render json: @task.errors.full_messages, status: :unprocessable_entity
     end

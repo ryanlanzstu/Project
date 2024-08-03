@@ -16,17 +16,17 @@
  */
 /* Adds sticky note look to each list!! */
 .sticky-note {
-  background-color: #fdfd86; /* Light yellow, typical sticky note color */
-  box-shadow: 5px 5px 15px rgba(0,0,0,0.2); /* Adds a subtle shadow */
-  padding: 10px; /* Padding inside the note */
-  margin: 15px; /* Margin around each note */
-  border-radius: 5px; /* Slightly rounded corners for the sticky note */
-  font-family: 'Comic Sans MS', 'Comic Sans', cursive; /* Gives a handwritten feel, optional */
-  font-size: 16px; /* Adjust as needed */
-  max-width: 200px; /* Maximum width of the sticky note */
-  word-wrap: break-word; /* Ensures the content breaks to avoid overflow */
+  background-color: #fdfd86; 
+  box-shadow: 5px 5px 15px rgba(0,0,0,0.2); 
+  padding: 10px; 
+  margin: 15px; 
+  border-radius: 5px; 
+  font-family: 'Comic Sans MS', 'Comic Sans', cursive; 
+  font-size: 16px; 
+  max-width: 200px; 
+  word-wrap: break-word; 
 }
-/* Optional: Add some tilt to the sticky notes for a more dynamic look */
+/* Sticky note tilt */
 .sticky-note:nth-child(odd) {
   transform: rotate(-2deg);
 }
@@ -61,4 +61,35 @@
   border: 1px solid #ccc;
   resize: both;
   overflow: auto;
+}
+
+/* Footer styling */
+.footer {
+  background-color: #000000; 
+  color: #ffffff;
+  padding: 20px 0; 
+  font-family: Arial, sans-serif; 
+  text-align: center; 
+  width: 100%; 
+  position: relative; 
+  left: 0; 
+}
+
+/* Styling */
+.footer a {
+  color: #ffffff;
+  text-decoration: none;
+}
+
+
+/* Padding for inner footer container */
+.footer .container {
+  padding: 0 20px; 
+}
+
+
+@media (max-width: 768px) {
+  .footer {
+    padding: 15px 0;
+  }
 }

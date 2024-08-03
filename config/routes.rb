@@ -1,7 +1,7 @@
 Rails.application.routes.draw do
   resources :tasks do
     member do
-      patch :sort  # Change PUT to PATCH to match your JavaScript
+      patch :sort  #Change put to patch to make sure moved tasks stick
       patch :update_date
       patch :move
     end
