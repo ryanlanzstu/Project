@@ -5,7 +5,6 @@ class TasksController < ApplicationController
   def index
     @tasks = current_user.tasks
   end
-
   def sort
     if @task.update(row_order_position: params[:row_order_position], list_id: params[:list_id])
       head :no_content  # No content to send back on successful update
@@ -13,7 +12,6 @@ class TasksController < ApplicationController
       render json: @task.errors.full_messages, status: :unprocessable_entity
     end
   end
-
   def update_date
     if @task.update(start_date: params[:date])
       render json: { status: 'success' }, status: :ok
@@ -36,10 +34,8 @@ class TasksController < ApplicationController
   def new
     @task = current_user.tasks.build
   end
-
   def edit
   end
-
   def create
     @task = current_user.tasks.build(task_params)
     if @task.save
@@ -48,7 +44,6 @@ class TasksController < ApplicationController
       render :new, status: :unprocessable_entity
     end
   end
-
   def update
     if @task.update(task_params)
       redirect_to task_url(@task), notice: "Task was successfully updated."
@@ -56,18 +51,14 @@ class TasksController < ApplicationController
       render :edit, status: :unprocessable_entity
     end
   end
-
   def destroy
     @task.destroy
     redirect_to tasks_url, notice: "Task was successfully destroyed."
   end
-
   private
-
   def set_task
     @task = current_user.tasks.find(params[:id])
   end
-
   def task_params
     params.require(:task).permit(:name, :list_id, :start_date, :end_date, :description)
   end

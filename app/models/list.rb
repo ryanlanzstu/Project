@@ -8,4 +8,3 @@ class List < ApplicationRecord
     include RankedModel
     ranks :row_order
 end
-

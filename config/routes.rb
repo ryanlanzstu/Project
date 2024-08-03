@@ -1,7 +1,7 @@
 Rails.application.routes.draw do
   resources :tasks do
     member do
-      put :sort
+      patch :sort  # Change PUT to PATCH to match your JavaScript
       patch :update_date
       patch :move
     end
@@ -15,7 +15,6 @@ Rails.application.routes.draw do
 
   root "home#index"
   get "calendar/month", to: 'calendar#month'
-
   devise_for :users
   resources :collegemodules, path: 'home_modules'
   get 'home/modules', to: 'home#modules', as: 'home_modules'

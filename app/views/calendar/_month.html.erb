@@ -1,74 +1,67 @@
 <p style="color: green"><%= notice %></p>
 
 <div class="container">
-  <div class="lists">
-    <h2>Lists</h2>
-    <div id="lists" class="sortable" data-controller="sortable" data-sortable-group-value="lists">
-      <% if @lists.present? %>
-        <% @lists.each do |list| %>
-          <div class="list sticky-note" data-id="<%= list.id %>" data-sortable-url="<%= sort_list_path(list) %>">
-            <h3><%= list.name %></h3>
-            <ul class="tasks sortable" data-list-id="<%= list.id %>" data-controller="sortable" data-sortable-group-value="tasks" data-sortable-url="/tasks/sort">
-              <% list.tasks.each do |task| %>
-                <li class="task" data-id="<%= task.id %>">
-                  <%= task.name %>
-                </li>
-              <% end %>
-            </ul>
+  <div class="row">
+    <div class="col-md-4 lists">
+      <h2>Lists</h2>
+      <div id="lists" class="sortable">
+        <% if @lists.present? %>
+          <% @lists.each do |list| %>
+            <div class="list sticky-note" id="list-<%= list.id %>" data-list-id="<%= list.id %>">
+              <h3><%= list.name %></h3>
+              <div class="tasks sortable" id="tasks-list-<%= list.id %>" data-list-id="<%= list.id %>">
+                <% list.tasks.each do |task| %>
+                  <div class="task" id="task-<%= task.id %>" data-task-id="<%= task.id %>">
+                    <%= task.name %>
+                  </div>
+                <% end %>
+              </div>
+            </div>
+          <% end %>
+        <% else %>
+          <p>No lists found.</p>
+        <% end %>
+      </div>
+    </div>
+
+    <div class="col-md-8 calendar">
+      <h1><%= @date.strftime('%B %Y') %></h1>
+      <div class="grid grid-cols-7">
+        <% Date::ABBR_DAYNAMES.rotate.each do |weekday| %>
+          <div>
+            <%= weekday %>
           </div>
         <% end %>
-      <% else %>
-        <p>No lists found.</p>
-      <% end %>
-    </div>
-    <!-- Add buttons here inside the lists container -->
-    <div class="list-actions">
-      <%= link_to 'New List', new_list_path, class: 'btn btn-primary' %>
-      <%= link_to 'New Task', new_task_path, class: 'btn btn-primary' %>
-      <%= link_to 'New Event', new_event_path, class: 'btn btn-primary' %>
-    </div>
-  </div>
-
-  <div class="calendar">
-    <h1><%= @date.strftime('%B %Y') %></h1>
-    <div class="grid grid-cols-7">
-      <div>Mon</div>
-      <div>Tue</div>
-      <div>Wed</div>
-      <div>Thu</div>
-      <div>Fri</div>
-      <div>Sat</div>
-      <div>Sun</div>
-      <% (1..@date.end_of_month.day).each do |day| %>
-        <div class="border min-h-24">
-          <div class="date"><%= day %></div>
-          <div id="day-<%= @date.strftime('%Y-%m') %>-<%= '%02d' % day %>" class="task-dropzone sortable" data-controller="sortable" data-sortable-group-value="tasks" data-sortable-url="/tasks/update_date" data-date="<%= @date.strftime('%Y-%m') %>-<%= '%02d' % day %>">
-            <ul>
-              <% @tasks.each do |task| %>
-                <% if task.start_date.present? && task.start_date.to_date == Date.new(@date.year, @date.month, day) %>
-                  <li class="task" data-id="<%= task.id %>">
-                    <%= task.name %>
-                  </li>
-                <% end %>
+        <% @date.beginning_of_month.wday.times do %>
+          <div></div>
+        <% end %>
+        <% @date.all_month.each do |day| %>
+          <div class="border min-h-24 <%= "bg-blue-200" if day == Date.today %>">
+            <div class="date"><%= day.strftime('%d') %></div>
+            <div id="day-<%= day %>" class="task-dropzone" data-date="<%= day %>">
+              <% @tasks.where("DATE(start_date) = ?", day).each do |task| %>
+                <div class="task" id="task-<%= task.id %>" data-task-id="<%= task.id %>">
+                  <%= task.name %>
+                </div>
               <% end %>
-              <% if @events[Date.new(@date.year, @date.month, day)] %>
-                <% @events[Date.new(@date.year, @date.month, day)].each do |event| %>
-                  <li class="event" data-id="<%= event.id %>">
-                    <%= event.title %>
-                  </li>
-                <% end %>
+              <% (@events[day] || []).each do |event| %>
+                <div class="event bg-rose-200 rounded-md p-2 mt-1" id="event-<%= event.id %>">
+                  <%= event.title %>
+                </div>
               <% end %>
-            </ul>
+            </div>
           </div>
-        </div>
-      <% end %>
+        <% end %>
+      </div>
     </div>
   </div>
 </div>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.10.2/Sortable.min.js"></script>
 <script>
-  document.addEventListener('turbolinks:load', function() {
-    const lists = document.querySelectorAll('#lists .tasks');
+  document.addEventListener('DOMContentLoaded', function() {
+    // Initialize Sortable for task lists
+    const lists = document.querySelectorAll('.tasks');
 
     lists.forEach(list => {
       new Sortable(list, {
@@ -79,8 +72,10 @@
         },
         animation: 150,
         onEnd: function(evt) {
-          const taskId = evt.item.dataset.id;
-          const newListId = evt.to.closest('.tasks').dataset.listId;
+          const taskId = evt.item.id.split('-')[1]; // Extract task ID
+          const newListId = evt.to.closest('.tasks').id.split('-')[2]; // Extract list ID
+          const newIndex = evt.newIndex; // Get new index
+          console.log(`Moved task ${taskId} to list ${newListId} at position ${newIndex}`);
 
           if (newListId) {
             fetch(`/tasks/${taskId}/sort`, {
@@ -89,37 +84,51 @@
                 'Content-Type': 'application/json',
                 'X-CSRF-Token': document.querySelector('meta[name="csrf-token"]').content
               },
-              body: JSON.stringify({ list_id: newListId })
-            });
+              body: JSON.stringify({ list_id: newListId, row_order_position: newIndex })
+            })
+            .then(response => {
+              if (!response.ok) {
+                console.error(`Failed to update task ${taskId} to list ${newListId}`);
+                throw new Error('Network response was not ok.');
+              }
+              return response.json();
+            })
+            .then(data => console.log('Task updated successfully:', data))
+            .catch(error => console.error('Error:', error));
           }
         }
       });
     });
 
+    // Initialize Sortable for calendar dropzones
     const dropzones = document.querySelectorAll('.task-dropzone');
 
     dropzones.forEach(dropzone => {
       new Sortable(dropzone, {
-        group: {
-          name: 'tasks',
-          pull: true,
-          put: true
-        },
+        group: 'tasks',
         animation: 150,
         onEnd: function(evt) {
-          const taskId = evt.item.dataset.id;
-          const newDate = evt.to.dataset.date;
+          const taskId = evt.item.id.split('-')[1]; // Extract task ID
+          const newDate = evt.to.dataset.date; // Use dataset attribute directly
+          console.log(`Moved task ${taskId} to date ${newDate}`);
 
-          if (newDate) {
-            fetch(`/tasks/${taskId}/update_date`, {
-              method: 'PATCH',
-              headers: {
-                'Content-Type': 'application/json',
-                'X-CSRF-Token': document.querySelector('meta[name="csrf-token"]').content
-              },
-              body: JSON.stringify({ date: newDate })
-            });
-          }
+          fetch(`/tasks/${taskId}/update_date`, {
+            method: 'PATCH',
+            headers: {
+              'Content-Type': 'application/json',
+              'X-CSRF-Token': document.querySelector('meta[name="csrf-token"]').content
+            },
+            body: JSON.stringify({ date: newDate })
+          })
+          .then(response => {
+            if (!response.ok) {
+              console.error(`Failed to update task ${taskId} to date ${newDate}`);
+              throw new Error('Network response was not ok.');
+            }
+            return response.json();
+          })
+          .then(data => console.log('Task date updated successfully:', data))
+          .catch(error => console.error('Error:', error));
         }
       });
     });
