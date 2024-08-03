@@ -6,18 +6,21 @@
     </button>
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
       <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-        <% if user_signed_in? %> <!-- Shows pages only if the user is signed in -->
+        <% if user_signed_in? %> <!-- Show pages only if the user is signed in -->
         <li class="nav-item">
           <%= link_to 'Modules', home_modules_path, class: 'nav-link' %>
         </li>
         <li class="nav-item">
-          <%= link_to 'Calendar', calendar_month_path, class: 'nav-link' %> <!-- Updated link -->
+          <%= link_to 'Calendar', calendar_month_path, class: 'nav-link' %>
+        </li>
+        <li class="nav-item">
+          <%= link_to 'Lists', lists_path, class: 'nav-link' %> <!-- Added Lists link -->
         </li>
         <li class="nav-item">
           <%= link_to 'Edit Account', edit_user_registration_path, class: 'nav-link' %>
         </li>
         <li class="nav-item">
-          <%= button_to 'Sign Out', destroy_user_session_path, method: :delete, class: 'btn btn-link nav-link', form: { data: { turbo: false } } %> <!-- Updated to button_to -->
+          <%= link_to 'Sign Out', destroy_user_session_path, method: :delete, class: 'nav-link' %>
         </li>
         <% else %>
         <li class="nav-item">

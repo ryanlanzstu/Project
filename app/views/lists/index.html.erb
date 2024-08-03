@@ -2,18 +2,47 @@
 
 <h1>Lists</h1>
 
-<div id="lists">
-  <ul data-controller="sortable" data-sortable-group-value="lists">
-    <% @lists.each do |list| %>
-      <li data-sortable-update-url="<%= sort_list_path(list) %>" class="list-container">
-        <div class="sticky-note">
-          <%= render list %>
-        </div>
-      </li>
-    <% end %>
-  </ul>
+<div class="container my-5">
+  <div class="row">
+    <div class="col-md-12">
+      <div id="lists">
+        <ul class="d-flex flex-wrap" data-controller="sortable" data-sortable-group-value="lists">
+          <% @lists.each do |list| %>
+            <li data-sortable-update-url="<%= sort_list_path(list) %>" class="list-container me-3 mb-3" style="min-width: 200px;">
+              <div class="sticky-note">
+                <h3><%= list.name %></h3>
+                <div>
+                  <%= link_to "Edit List", edit_list_path(list), class: 'text-decoration-none me-2' %>
+                  <%= button_to "Delete List", list, method: :delete, data: { confirm: 'Are you sure?' }, class: 'text-decoration-none text-danger' %>
+                </div>
+                <hr>
+                <ul class="list-unstyled">
+                  <% list.tasks.each do |task| %>
+                    <li>
+                      <div class="task-item">
+                        <%= task.name %>
+                        <div>
+                          <%= link_to "Edit Task", edit_task_path(task), class: 'text-decoration-none me-2' %>
+                          <%= button_to "Delete Task", task, method: :delete, data: { confirm: 'Are you sure?' }, class: 'text-decoration-none text-danger' %>
+                        </div>
+                      </div>
+                    </li>
+                  <% end %>
+                </ul>
+              </div>
+            </li>
+          <% end %>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="row mt-4">
+    <div class="col-md-6">
+      <%= link_to 'New List', new_list_path, class: 'btn btn-primary' %>
+    </div>
+    <div class="col-md-6">
+      <%= link_to 'New Task', new_task_path, class: 'btn btn-primary' %>
+    </div>
+  </div>
 </div>
-
-<%= link_to 'New List', new_list_path, class: 'btn btn-primary' %>
-
-<%= link_to "New Task", new_task_path, class: 'btn btn-primary' %>
